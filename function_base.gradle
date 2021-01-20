@@ -1,0 +1,74 @@
+def functionName = project.getName().replaceAll("function-", "")
+def isRunAlone = !rootProject.ext.includeMoudle.contains(functionName)
+if (isRunAlone) {
+    apply plugin: 'com.android.application'
+} else {
+    apply plugin: 'com.android.library'
+}
+
+def javaVersion = JavaVersion.VERSION_1_8
+
+android({
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    buildToolsVersion rootProject.ext.android.buildToolsVersion
+
+    compileOptions {
+        sourceCompatibility javaVersion
+        targetCompatibility javaVersion
+    }
+    defaultConfig {
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+
+        if (isRunAlone) {
+            applicationId rootProject.ext.android.organization + "." + functionName
+            multiDexEnabled true
+        }
+        javaCompileOptions {
+            annotationProcessorOptions {
+//                includeCompileClasspath true
+                arguments = [moduleName: project.getName()]
+            }
+        }
+        versionCode 1
+        versionName "1.0.0"
+        resourcePrefix functionName + "_"
+        resValue "string", functionName + "_module_name", project.getName()
+    }
+
+    if (isRunAlone) {// 如果独立运行的话
+        sourceSets {
+            main {
+                // 指定AndroidManifest.xml文件
+                manifest.srcFile 'src/runalone/AndroidManifest.xml'
+                // 指定Java源文件
+                java.srcDirs = ['src/main/java', 'src/runalone/java']
+                // 指定资源文件
+                res.srcDirs = ['src/main/res', 'src/runalone/res']
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    // 配置组件项目依赖
+    dependencies {
+        implementation project(":function-utils")
+        // test
+        testImplementation rootProject.ext.test.junit
+        testImplementation rootProject.ext.test.robolectric
+        testImplementation rootProject.ext.test.shadows_support
+        testImplementation rootProject.ext.test.shadows_multidex
+        androidTestImplementation rootProject.ext.test.testrunner
+        androidTestImplementation rootProject.ext.test.android_junit
+        androidTestImplementation rootProject.ext.test.espresso
+    }
+})
