@@ -1,0 +1,14 @@
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    testImplementation rootProject.ext.test.junit
+    testImplementation rootProject.ext.test.robolectric
+    testImplementation rootProject.ext.test.shadows_support
+    testImplementation rootProject.ext.test.shadows_multidex
+    testImplementation rootProject.ext.test.mockito_core
+
+    androidTestImplementation rootProject.ext.test.android_junit
+    androidTestImplementation rootProject.ext.test.testrunner
+    androidTestImplementation rootProject.ext.test.espresso
+}
+

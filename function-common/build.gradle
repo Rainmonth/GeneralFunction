@@ -1,4 +1,4 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 apply from: '../module_test_config.gradle'
 
 android {
@@ -6,13 +6,13 @@ android {
     buildToolsVersion rootProject.ext.android.buildToolsVersion
 
     defaultConfig {
-        applicationId "com.rainmonth.function"
         minSdkVersion rootProject.ext.android.minSdkVersion
         targetSdkVersion rootProject.ext.android.targetSdkVersion
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
     }
 
     buildTypes {
@@ -25,6 +25,11 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    api project(':function-common')
+    // 使用 implementation 会导致以来 function-utils 的项目无法使用
+    api rootProject.ext.androidx.appcompat
+    api rootProject.ext.androidx.recyclerview
+    api rootProject.ext.androidx.constraintlayout
+    api rootProject.ext.androidx.annotations
+    api rootProject.ext.androidx.cardview
+    api rootProject.ext.androidx.material
 }

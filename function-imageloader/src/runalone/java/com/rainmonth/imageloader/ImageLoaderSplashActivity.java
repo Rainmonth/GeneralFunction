@@ -9,6 +9,6 @@ public class ImageLoaderSplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_image_loader_splash);
+        setContentView(R.layout.imageloader_activity_splash);
     }
 }

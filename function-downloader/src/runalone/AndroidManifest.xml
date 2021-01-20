@@ -2,8 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.rainmonth.downloader">
 
-    <application android:theme="@style/MaterialLightAppTheme">
-        <activity android:name=".DownloadSplahActivity">
+    <application
+        android:label="@string/downloader_app_name"
+        android:theme="@style/MaterialLightAppTheme">
+        <activity android:name=".DownloadSplashActivity">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
                 <action android:name="android.intent.action.MAIN" />

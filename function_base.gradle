@@ -5,6 +5,19 @@ if (isRunAlone) {
 } else {
     apply plugin: 'com.android.library'
 }
+apply from: '../module_test_config.gradle'
+if (functionName == "database") {
+    println("应用" + functionName + "配置" )
+} else if (functionName == "downloader") {
+    println("应用" + functionName + "配置" )
+} else if (functionName == "imageloader") {
+    println("应用" + functionName + "配置" )
+} else if (functionName == "selector") {
+    println("应用" + functionName + "配置" )
+} else {
+    println("应用" + functionName + "配置" )
+}
+
 
 def javaVersion = JavaVersion.VERSION_1_8
 
@@ -61,14 +74,7 @@ android({
 
     // 配置组件项目依赖
     dependencies {
-        implementation project(":function-utils")
-        // test
-        testImplementation rootProject.ext.test.junit
-        testImplementation rootProject.ext.test.robolectric
-        testImplementation rootProject.ext.test.shadows_support
-        testImplementation rootProject.ext.test.shadows_multidex
-        androidTestImplementation rootProject.ext.test.testrunner
-        androidTestImplementation rootProject.ext.test.android_junit
-        androidTestImplementation rootProject.ext.test.espresso
+        implementation project(":function-common")
+
     }
 })

@@ -2,9 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.rainmonth.selector">
 
-    <application android:theme="@style/MaterialLightAppTheme"
-        android:name=""
-        >
+    <application
+        android:label="@string/selector_app_name"
+        android:theme="@style/MaterialLightAppTheme">
         <activity android:name=".SelectorSplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,6 +1,6 @@
 rootProject.name='GeneralFunction'
 include ':sample'
-include ':function-utils'
+include ':function-common'
 include ':function-database'
 include ':function-selector'
 include ':function-imageloader'

@@ -9,11 +9,11 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/function-common" />
             <option value="$PROJECT_DIR$/function-database" />
             <option value="$PROJECT_DIR$/function-downloader" />
             <option value="$PROJECT_DIR$/function-imageloader" />
             <option value="$PROJECT_DIR$/function-selector" />
-            <option value="$PROJECT_DIR$/function-utils" />
             <option value="$PROJECT_DIR$/sample" />
           </set>
         </option>

@@ -9,6 +9,6 @@ public class SelectorSplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_selector_splash);
+        setContentView(R.layout.selector_activity_splash);
     }
 }

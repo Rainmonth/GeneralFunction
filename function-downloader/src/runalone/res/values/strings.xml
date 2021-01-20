@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="downloader_app_name">selector</string>
+    <string name="downloader_app_name">downloader</string>
 </resources>
