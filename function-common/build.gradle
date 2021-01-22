@@ -32,4 +32,6 @@ dependencies {
     api rootProject.ext.androidx.annotations
     api rootProject.ext.androidx.cardview
     api rootProject.ext.androidx.material
+
+    api rootProject.ext.json.gson
 }

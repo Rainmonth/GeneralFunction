@@ -1,0 +1,8 @@
+package com.rainmonth.adapter.entity;
+
+/**
+ * https://github.com/CymChad/BaseRecyclerViewAdapterHelper
+ */
+public interface MultiItemEntity {
+    int getItemType();
+}
