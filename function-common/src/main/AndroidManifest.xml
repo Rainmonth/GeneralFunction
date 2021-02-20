@@ -1,2 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.rainmonth.utils" />
+    package="com.rainmonth.utils">
+
+    <application>
+        <activity android:name=".UtilsTransActivity" />
+        <activity android:name=".UtilsTransActivity4MainProcess" />
+    </application>
+</manifest>
