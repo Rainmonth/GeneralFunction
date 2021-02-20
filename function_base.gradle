@@ -7,15 +7,17 @@ if (isRunAlone) {
 }
 apply from: '../module_test_config.gradle'
 if (functionName == "database") {
-    println("应用" + functionName + "配置" )
+    println("应用" + functionName + "配置")
 } else if (functionName == "downloader") {
-    println("应用" + functionName + "配置" )
+    println("应用" + functionName + "配置")
 } else if (functionName == "imageloader") {
-    println("应用" + functionName + "配置" )
+    println("应用" + functionName + "配置")
 } else if (functionName == "selector") {
-    println("应用" + functionName + "配置" )
+    println("应用" + functionName + "配置")
+} else if (functionName == "floatview") {
+    println("应用" + functionName + "配置")
 } else {
-    println("应用" + functionName + "配置" )
+    println("应用" + functionName + "配置")
 }
 
 

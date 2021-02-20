@@ -1,0 +1,17 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.rainmonth.floatview">
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <application
+        android:label="@string/floatview_app_name"
+        android:theme="@style/MaterialLightAppTheme">
+        <activity android:name=".FloatViewMainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+
+</manifest>
