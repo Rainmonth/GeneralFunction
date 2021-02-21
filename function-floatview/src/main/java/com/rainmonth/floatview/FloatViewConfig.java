@@ -62,64 +62,72 @@ public class FloatViewConfig {
             return isGlobalFloat;
         }
 
-        public void setGlobalFloat(boolean globalFloat) {
+        public Builder setGlobalFloat(boolean globalFloat) {
             isGlobalFloat = globalFloat;
+            return this;
         }
 
         public boolean isAutoCompat() {
             return autoCompat;
         }
 
-        public void setAutoCompat(boolean autoCompat) {
+        public Builder setAutoCompat(boolean autoCompat) {
             this.autoCompat = autoCompat;
+            return this;
         }
 
         public boolean isAutoHide() {
             return autoHide;
         }
 
-        public void setAutoHide(boolean autoHide) {
+        public Builder setAutoHide(boolean autoHide) {
             this.autoHide = autoHide;
+            return this;
         }
 
         public int getAutoHideDelay() {
             return autoHideDelay;
         }
 
-        public void setAutoHideDelay(int autoHideDelay) {
+        public Builder setAutoHideDelay(int autoHideDelay) {
             this.autoHideDelay = autoHideDelay;
+            return this;
         }
 
         public boolean isDragMode() {
             return isDragMode;
         }
 
-        public void setDragMode(boolean dragMode) {
+        public Builder setDragMode(boolean dragMode) {
             isDragMode = dragMode;
+            return  this;
         }
 
         public int getWidth() {
             return width;
         }
 
-        public void setWidth(int width) {
+        public Builder setWidth(int width) {
             this.width = width;
+            return this;
         }
 
         public int getHeight() {
             return height;
         }
 
-        public void setHeight(int height) {
+        public Builder setHeight(int height) {
             this.height = height;
+            return this;
         }
 
         public int getGravity() {
             return gravity;
         }
 
-        public void setGravity(int gravity) {
+        public Builder setGravity(int gravity) {
             this.gravity = gravity;
+            return this;
         }
 
         FloatViewConfig build() {

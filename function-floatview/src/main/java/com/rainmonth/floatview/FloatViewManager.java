@@ -16,6 +16,7 @@ import androidx.annotation.RequiresApi;
 import com.rainmonth.utils.PermissionUtils;
 import com.rainmonth.utils.ToastUtils;
 import com.rainmonth.utils.Utils;
+import com.rainmonth.utils.log.LogUtils;
 
 import java.util.HashMap;
 
@@ -25,12 +26,19 @@ import static android.content.Context.WINDOW_SERVICE;
  * 悬浮窗管理器
  */
 public class FloatViewManager {
+    private static final int FLOAT_VIEW_ID_BASE = 100;
+    public static final int FLOAT_VIEW_ID_MAIN = FLOAT_VIEW_ID_BASE + 1;
+
+    private static final String TAG = "FloatViewManager";
+
     private Activity mActivity;
+    private WindowManager mManager;
     // todo 由于多个悬浮窗的配置可能不同，如果都采用mConfig这个引用，可能会达不到每个悬浮窗分开配置的能力
     private FloatViewConfig mConfig;
 
     // 用来进行 FloatView 的管理
     private HashMap<Integer, View> mFloatViewMap = new HashMap<>();
+
 
     // todo 注意处理内存泄漏问题
     private static volatile FloatViewManager mInstance;
@@ -46,12 +54,12 @@ public class FloatViewManager {
         return mInstance;
     }
 
-    private FloatViewManager with(Activity activity) {
+    public FloatViewManager with(Activity activity) {
         this.mActivity = activity;
         return this;
     }
 
-    private FloatViewManager config(FloatViewConfig config) {
+    public FloatViewManager config(FloatViewConfig config) {
         this.mConfig = config;
         return this;
     }
@@ -61,12 +69,13 @@ public class FloatViewManager {
     }
 
     public FloatViewManager add(int floatViewId, boolean isNeedShow) {
+        LogUtils.d("FloatView", "add, floatViewId: " + floatViewId + ", isNeedShow: " + isNeedShow);
         if (mConfig == null) {
             mConfig = getDefaultConfig();
         }
 
         if (mConfig.isGlobalFloat) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestDrawOverlays(floatViewId, isNeedShow);
             } else {
                 addGlobalFloatView(floatViewId, isNeedShow);
@@ -86,26 +95,31 @@ public class FloatViewManager {
     }
 
     private void removeGlobalFloatView(int floatViewId) {
+        LogUtils.d("FloatView", "removeGlobalFloatView, floatViewId: " + floatViewId);
         WindowManager windowManager = (WindowManager) mActivity.getSystemService(WINDOW_SERVICE);
         if (windowManager == null) {
             return;
         }
         if (mFloatViewMap.containsKey(floatViewId)) {
             windowManager.removeView(mFloatViewMap.get(floatViewId));
+            mFloatViewMap.remove(floatViewId);
         }
     }
 
     private void removeAppFloatView(int floatViewId) {
+        LogUtils.d("FloatView", "removeAppFloatView, floatViewId: " + floatViewId);
         FrameLayout frameLayout = getRootView();
         if (frameLayout == null) {
             return;
         }
         if (mFloatViewMap.containsKey(floatViewId)) {
             frameLayout.removeView(mFloatViewMap.get(floatViewId));
+            mFloatViewMap.remove(floatViewId);
         }
     }
 
     public void show(int floatViewId) {
+        LogUtils.d("FloatView", "show, floatViewId: " + floatViewId);
         View floatView = mFloatViewMap.get(floatViewId);
         if (floatView != null && floatView.getVisibility() != View.VISIBLE) {
             floatView.setVisibility(View.VISIBLE);
@@ -117,6 +131,7 @@ public class FloatViewManager {
     }
 
     public void hide(int floatViewId, boolean isNeedRemove) {
+        LogUtils.d("FloatView", "hide, floatViewId: " + floatViewId);
         View floatView = mFloatViewMap.get(floatViewId);
         if (floatView != null) {
             floatView.setVisibility(View.GONE);
@@ -128,17 +143,20 @@ public class FloatViewManager {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void requestDrawOverlays(int floatViewId, boolean isNeedShow) {
+        LogUtils.d("FloatView", "requestDrawOverlays, floatViewId: " + floatViewId + ", isNeedShow: " + isNeedShow);
         if (Settings.canDrawOverlays(mActivity)) {
-            handleDrawOverlaysGranted(floatViewId, isNeedShow);
+            addGlobalFloatView(floatViewId, isNeedShow);
         } else {
             PermissionUtils.requestDrawOverlays(new PermissionUtils.SimpleCallback() {
                 @Override
                 public void onGranted() {
+                    LogUtils.d("FloatView", "overlays granted!");
                     handleDrawOverlaysGranted(floatViewId, isNeedShow);
                 }
 
                 @Override
                 public void onDenied() {
+                    LogUtils.d("FloatView", "overlays denied!");
                     handleDrawOverlaysDenied(floatViewId, isNeedShow);
                 }
             });
@@ -150,6 +168,7 @@ public class FloatViewManager {
      * 正式开始悬浮窗的展示
      */
     private void handleDrawOverlaysGranted(int floatViewId, boolean isNeedShow) {
+        LogUtils.d("FloatView", "handleDrawOverlaysGranted, floatViewId: " + floatViewId + ", isNeedShow: " + isNeedShow);
         addGlobalFloatView(floatViewId, isNeedShow);
     }
 
@@ -157,9 +176,12 @@ public class FloatViewManager {
      * 添加全局悬浮窗
      */
     private void addGlobalFloatView(int floatViewId, boolean isNeedShow) {
+        LogUtils.d("FloatView", "addGlobalFloatView, floatViewId: " + floatViewId + ", isNeedShow: " + isNeedShow);
+
         // todo 避免多次获取 WindowManager
         WindowManager windowManager = (WindowManager) mActivity.getSystemService(WINDOW_SERVICE);
         if (windowManager == null) {
+            LogUtils.d("FloatView", "addGlobalFloatView, windowManager is null");
             return;
         }
         removeGlobalFloatView(floatViewId);
@@ -180,6 +202,7 @@ public class FloatViewManager {
      * @param floatViewId 悬浮View对应的id
      */
     private void addAppFloatView(int floatViewId, boolean isNeedShow) {
+        LogUtils.d("FloatView", "addAppFloatView, floatViewId: " + floatViewId + ", isNeedShow: " + isNeedShow);
         FrameLayout frameLayout = getRootView();
         if (frameLayout == null) {
             return;
@@ -202,6 +225,7 @@ public class FloatViewManager {
      * 提示或者采用兼容模式
      */
     private void handleDrawOverlaysDenied(int floatViewId, boolean isNeedShow) {
+        LogUtils.d("FloatView", "handleDrawOverlaysDenied, floatViewId: " + floatViewId + ", isNeedShow: " + isNeedShow);
         if (mConfig.autoCompat) {
             addAppFloatView(floatViewId, isNeedShow);
         } else {
@@ -210,6 +234,7 @@ public class FloatViewManager {
     }
 
     private View getFloatView(int floatViewId) {
+        LogUtils.d("FloatView", "getFloatView, floatViewId: " + floatViewId);
         if (mFloatViewMap.containsKey(floatViewId)) {
             return mFloatViewMap.get(floatViewId);
         } else {
@@ -229,6 +254,7 @@ public class FloatViewManager {
      * @return 默认配置参数
      */
     private FloatViewConfig getDefaultConfig() {
+        LogUtils.d("FloatView", "getDefaultConfig");
         return new FloatViewConfig();
     }
 
@@ -245,9 +271,9 @@ public class FloatViewManager {
             globalParams.type = WindowManager.LayoutParams.TYPE_PHONE;
         }
         globalParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
-        globalParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
-        globalParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        globalParams.gravity = Gravity.END | Gravity.BOTTOM;
+        globalParams.width = mConfig.width;
+        globalParams.height = mConfig.height;
+        globalParams.gravity = mConfig.gravity;
         // todo margin 设置
 //        globalParams.verticalMargin = ;
 //        globalParams.horizontalMargin = ;
@@ -260,9 +286,8 @@ public class FloatViewManager {
      * @return 应用内布局参数
      */
     private FrameLayout.LayoutParams getAppLayoutParams() {
-        FrameLayout.LayoutParams appParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
-                FrameLayout.LayoutParams.WRAP_CONTENT);
-        appParams.gravity = Gravity.END | Gravity.BOTTOM;
+        FrameLayout.LayoutParams appParams = new FrameLayout.LayoutParams(mConfig.width, mConfig.height);
+        appParams.gravity = mConfig.gravity;
         // todo margin 设置
 //        appParams.setMargins();
         return appParams;
@@ -275,7 +300,12 @@ public class FloatViewManager {
         if (mActivity == null) {
             return null;
         }
-        return mActivity.findViewById(android.R.id.content);
+        try {
+            return mActivity.getWindow().getDecorView().findViewById(android.R.id.content);
+        } catch (Throwable e) {
+            LogUtils.printStackTrace(TAG, e);
+            return null;
+        }
     }
 
     //</editor-fold>
