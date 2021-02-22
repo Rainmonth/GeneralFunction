@@ -42,7 +42,7 @@ public class FloatViewMainActivity extends AppCompatActivity {
                 .setGravity(Gravity.BOTTOM | Gravity.END)
                 .build();
         FloatViewManager.get()
-                .with(this)
+                .with(this, FloatViewManager.FLOAT_VIEW_ID_MAIN_BOTTOM_LEFT)
                 .config(config)
                 .add(FloatViewManager.FLOAT_VIEW_ID_MAIN_BOTTOM_LEFT)
                 .show(FloatViewManager.FLOAT_VIEW_ID_MAIN_BOTTOM_LEFT);
@@ -58,7 +58,7 @@ public class FloatViewMainActivity extends AppCompatActivity {
                 .setGravity(Gravity.CENTER)
                 .build();
         FloatViewManager.get()
-                .with(this)
+                .with(this, FloatViewManager.FLOAT_VIEW_ID_MAIN_CENTER)
                 .config(config)
                 .add(FloatViewManager.FLOAT_VIEW_ID_MAIN_CENTER)
                 .show(FloatViewManager.FLOAT_VIEW_ID_MAIN_CENTER);
