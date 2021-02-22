@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.Build;
 import android.provider.Settings;
-import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -24,12 +23,16 @@ import static android.content.Context.WINDOW_SERVICE;
 
 /**
  * 悬浮窗管理器
+ * todo fix 未获取到权限首次请求显示悬浮窗时不显示问题（问题原因：show 方法调用的时候，相应的FloatView还未添加
+ * 导致不能显示）
+ * todo fix
  */
 public class FloatViewManager {
-    private static final int FLOAT_VIEW_ID_BASE = 100;
-    public static final int FLOAT_VIEW_ID_MAIN = FLOAT_VIEW_ID_BASE + 1;
-
     private static final String TAG = "FloatViewManager";
+
+    private static final int FLOAT_VIEW_ID_BASE = 100;
+    public static final int FLOAT_VIEW_ID_MAIN_BOTTOM_LEFT = FLOAT_VIEW_ID_BASE + 1;
+    public static final int FLOAT_VIEW_ID_MAIN_CENTER = FLOAT_VIEW_ID_BASE + 2;
 
     private Activity mActivity;
     private WindowManager mManager;
@@ -56,6 +59,7 @@ public class FloatViewManager {
 
     public FloatViewManager with(Activity activity) {
         this.mActivity = activity;
+        mManager = (WindowManager) mActivity.getSystemService(WINDOW_SERVICE);
         return this;
     }
 
@@ -65,23 +69,19 @@ public class FloatViewManager {
     }
 
     public FloatViewManager add(int floatViewId) {
-        return add(floatViewId, false);
-    }
-
-    public FloatViewManager add(int floatViewId, boolean isNeedShow) {
-        LogUtils.d("FloatView", "add, floatViewId: " + floatViewId + ", isNeedShow: " + isNeedShow);
+        LogUtils.d("FloatView", "add, floatViewId: " + floatViewId);
         if (mConfig == null) {
             mConfig = getDefaultConfig();
         }
 
         if (mConfig.isGlobalFloat) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestDrawOverlays(floatViewId, isNeedShow);
+                requestDrawOverlays(floatViewId);
             } else {
-                addGlobalFloatView(floatViewId, isNeedShow);
+                addGlobalFloatView(floatViewId);
             }
         } else {
-            addAppFloatView(floatViewId, isNeedShow);
+            addAppFloatView(floatViewId);
         }
         return this;
     }
@@ -94,18 +94,27 @@ public class FloatViewManager {
         }
     }
 
+    /**
+     * 移除全局悬浮窗
+     *
+     * @param floatViewId 悬浮窗id
+     */
     private void removeGlobalFloatView(int floatViewId) {
         LogUtils.d("FloatView", "removeGlobalFloatView, floatViewId: " + floatViewId);
-        WindowManager windowManager = (WindowManager) mActivity.getSystemService(WINDOW_SERVICE);
-        if (windowManager == null) {
+        if (mManager == null) {
             return;
         }
         if (mFloatViewMap.containsKey(floatViewId)) {
-            windowManager.removeView(mFloatViewMap.get(floatViewId));
+            mManager.removeView(mFloatViewMap.get(floatViewId));
             mFloatViewMap.remove(floatViewId);
         }
     }
 
+    /**
+     * 移除应用内悬浮窗
+     *
+     * @param floatViewId 悬浮窗id
+     */
     private void removeAppFloatView(int floatViewId) {
         LogUtils.d("FloatView", "removeAppFloatView, floatViewId: " + floatViewId);
         FrameLayout frameLayout = getRootView();
@@ -118,6 +127,11 @@ public class FloatViewManager {
         }
     }
 
+    /**
+     * 显示悬浮窗
+     *
+     * @param floatViewId 悬浮窗id
+     */
     public void show(int floatViewId) {
         LogUtils.d("FloatView", "show, floatViewId: " + floatViewId);
         View floatView = mFloatViewMap.get(floatViewId);
@@ -126,61 +140,65 @@ public class FloatViewManager {
         }
     }
 
+    /**
+     * 隐藏悬浮窗
+     *
+     * @param floatViewId 悬浮窗id
+     */
     public void hide(int floatViewId) {
-        hide(floatViewId, false);
-    }
-
-    public void hide(int floatViewId, boolean isNeedRemove) {
         LogUtils.d("FloatView", "hide, floatViewId: " + floatViewId);
         View floatView = mFloatViewMap.get(floatViewId);
         if (floatView != null) {
             floatView.setVisibility(View.GONE);
         }
-        if (isNeedRemove) {
-            remove(floatViewId);
-        }
     }
 
+    /**
+     * 请求请求在其他应用上层权限
+     *
+     * @param floatViewId 悬浮窗id
+     */
     @RequiresApi(api = Build.VERSION_CODES.M)
-    private void requestDrawOverlays(int floatViewId, boolean isNeedShow) {
-        LogUtils.d("FloatView", "requestDrawOverlays, floatViewId: " + floatViewId + ", isNeedShow: " + isNeedShow);
+    private void requestDrawOverlays(int floatViewId) {
+        LogUtils.d("FloatView", "requestDrawOverlays, floatViewId: " + floatViewId);
         if (Settings.canDrawOverlays(mActivity)) {
-            addGlobalFloatView(floatViewId, isNeedShow);
+            // 已经有权限，直接添加
+            addGlobalFloatView(floatViewId);
         } else {
+            // 没有权限，请求权限
             PermissionUtils.requestDrawOverlays(new PermissionUtils.SimpleCallback() {
                 @Override
                 public void onGranted() {
                     LogUtils.d("FloatView", "overlays granted!");
-                    handleDrawOverlaysGranted(floatViewId, isNeedShow);
+                    handleDrawOverlaysGranted(floatViewId);
                 }
 
                 @Override
                 public void onDenied() {
                     LogUtils.d("FloatView", "overlays denied!");
-                    handleDrawOverlaysDenied(floatViewId, isNeedShow);
+                    handleDrawOverlaysDenied(floatViewId);
                 }
             });
         }
     }
 
     /**
-     * 开启 ACTION_MANAGE_OVERLAY_PERMISSION 权限成功
+     * 请求 ACTION_MANAGE_OVERLAY_PERMISSION 权限成功
      * 正式开始悬浮窗的展示
      */
-    private void handleDrawOverlaysGranted(int floatViewId, boolean isNeedShow) {
-        LogUtils.d("FloatView", "handleDrawOverlaysGranted, floatViewId: " + floatViewId + ", isNeedShow: " + isNeedShow);
-        addGlobalFloatView(floatViewId, isNeedShow);
+    private void handleDrawOverlaysGranted(int floatViewId) {
+        LogUtils.d("FloatView", "handleDrawOverlaysGranted, floatViewId: " + floatViewId);
+        addGlobalFloatView(floatViewId);
+
     }
 
     /**
      * 添加全局悬浮窗
      */
-    private void addGlobalFloatView(int floatViewId, boolean isNeedShow) {
-        LogUtils.d("FloatView", "addGlobalFloatView, floatViewId: " + floatViewId + ", isNeedShow: " + isNeedShow);
+    private void addGlobalFloatView(int floatViewId) {
+        LogUtils.d("FloatView", "addGlobalFloatView, floatViewId: " + floatViewId);
 
-        // todo 避免多次获取 WindowManager
-        WindowManager windowManager = (WindowManager) mActivity.getSystemService(WINDOW_SERVICE);
-        if (windowManager == null) {
+        if (mManager == null) {
             LogUtils.d("FloatView", "addGlobalFloatView, windowManager is null");
             return;
         }
@@ -188,12 +206,8 @@ public class FloatViewManager {
 
         View floatView = getFloatView(floatViewId);
         mFloatViewMap.put(floatViewId, floatView);
-        windowManager.addView(floatView, getGlobalLayoutParams());
-        if (isNeedShow) {
-            floatView.setVisibility(View.VISIBLE);
-        } else {
-            floatView.setVisibility(View.GONE);
-        }
+        mManager.addView(floatView, getGlobalLayoutParams());
+        floatView.setVisibility(View.GONE);
     }
 
     /**
@@ -201,33 +215,30 @@ public class FloatViewManager {
      *
      * @param floatViewId 悬浮View对应的id
      */
-    private void addAppFloatView(int floatViewId, boolean isNeedShow) {
-        LogUtils.d("FloatView", "addAppFloatView, floatViewId: " + floatViewId + ", isNeedShow: " + isNeedShow);
+    private void addAppFloatView(int floatViewId) {
+        LogUtils.d("FloatView", "addAppFloatView, floatViewId: " + floatViewId);
         FrameLayout frameLayout = getRootView();
         if (frameLayout == null) {
             return;
         }
         if (mFloatViewMap.containsKey(floatViewId)) {
             frameLayout.removeView(mFloatViewMap.get(floatViewId));
+            mFloatViewMap.remove(floatViewId);
         }
         View floatView = getFloatView(floatViewId);
         mFloatViewMap.put(floatViewId, floatView);
         frameLayout.addView(floatView, getAppLayoutParams());
-        if (isNeedShow) {
-            floatView.setVisibility(View.VISIBLE);
-        } else {
-            floatView.setVisibility(View.GONE);
-        }
+        floatView.setVisibility(View.GONE);
     }
 
     /**
      * 开启 ACTION_MANAGE_OVERLAY_PERMISSION 权限失败
      * 提示或者采用兼容模式
      */
-    private void handleDrawOverlaysDenied(int floatViewId, boolean isNeedShow) {
-        LogUtils.d("FloatView", "handleDrawOverlaysDenied, floatViewId: " + floatViewId + ", isNeedShow: " + isNeedShow);
+    private void handleDrawOverlaysDenied(int floatViewId) {
+        LogUtils.d("FloatView", "handleDrawOverlaysDenied, floatViewId: " + floatViewId);
         if (mConfig.autoCompat) {
-            addAppFloatView(floatViewId, isNeedShow);
+            addAppFloatView(floatViewId);
         } else {
             ToastUtils.showShort("您拒绝了 ACTION_MANAGE_OVERLAY_PERMISSION 权限");
         }
@@ -264,6 +275,7 @@ public class FloatViewManager {
      * @return 全局布局参数
      */
     private WindowManager.LayoutParams getGlobalLayoutParams() {
+        LogUtils.d(TAG, "getGlobalLayoutParams()");
         WindowManager.LayoutParams globalParams = new WindowManager.LayoutParams();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             globalParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
@@ -286,6 +298,7 @@ public class FloatViewManager {
      * @return 应用内布局参数
      */
     private FrameLayout.LayoutParams getAppLayoutParams() {
+        LogUtils.d(TAG, "getAppLayoutParams()");
         FrameLayout.LayoutParams appParams = new FrameLayout.LayoutParams(mConfig.width, mConfig.height);
         appParams.gravity = mConfig.gravity;
         // todo margin 设置
@@ -297,6 +310,7 @@ public class FloatViewManager {
      * 获取Activity的根布局以向其中添加FloatView
      */
     private FrameLayout getRootView() {
+        LogUtils.d(TAG, "getRootView()");
         if (mActivity == null) {
             return null;
         }
