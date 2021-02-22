@@ -104,6 +104,7 @@ public class FloatViewManager {
     }
 
     public void remove(int floatViewId) {
+        LogUtils.d(TAG, "remove(), floatViewId: " + floatViewId);
         if (mConfig.isGlobalFloat) {
             removeGlobalFloatView(floatViewId);
         } else {
