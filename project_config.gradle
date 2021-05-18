@@ -18,8 +18,9 @@ ext {
 //            "downloader",
 //            "imageloader",
 //            "selector",
-//            "utils"
-//            "floatview"
+//            "utils",
+//            "floatview",
+//            "service"
     ]
 
     // 最好用"_"链接 而不是"-"，用后者采用ext.test.name是会报错，需要使用ext.test['name']

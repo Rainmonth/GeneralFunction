@@ -1,7 +1,9 @@
 package com.rainmonth.floatview;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -29,6 +31,15 @@ public class FloatViewMainActivity extends AppCompatActivity {
         });
         tvAdd2.setOnClickListener(v -> {
             handleAdd2Click();
+        });
+
+        TextView tvTest = findViewById(R.id.tv_test);
+        tvTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FloatViewMainActivity.this, TestActivity.class);
+                startActivity(intent);
+            }
         });
     }
 

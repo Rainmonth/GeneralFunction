@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/service_scroll_view"
+    tools:context="com.rainmonth.service.MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_btn_instruction"
+            style="@style/service_text_btn"
+            android:text="讲述Service的使用" />
+
+        <TextView
+            android:id="@+id/tv_btn_normal_service"
+            style="@style/service_text_btn"
+            android:text="普通Service" />
+
+        <TextView
+            android:id="@+id/tv_btn_foreground_service"
+            style="@style/service_text_btn"
+            android:text="前台Service" />
+
+        <TextView
+            android:id="@+id/tv_btn_remote_service"
+            style="@style/service_text_btn"
+            android:text="Remote Service" />
+
+        <TextView
+            android:id="@+id/tv_btn_exit_still_run_service"
+            style="@style/service_text_btn"
+            android:text="程序退出仍运行的Service" />
+
+        <TextView
+            android:id="@+id/tv_btn_intent_service"
+            style="@style/service_text_btn"
+            android:text="Intent Service" />
+
+    </LinearLayout>
+
+</ScrollView>

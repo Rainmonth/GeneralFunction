@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.rainmonth.service">
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <application
+        android:label="@string/service_app_name"
+        android:theme="@style/MaterialLightAppTheme">
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".NormalServiceActivity" />
+
+        <service android:name=".NormalService" />
+
+        <activity android:name=".ServiceInstructionActivity" />
+
+        <service android:name=".ForegroundService" />
+
+        <activity android:name=".RemoteServiceActivity" />
+
+        <service
+            android:name=".RemoteService"
+            android:exported="true"
+            android:permission="com.rainmonth.permission.AIDL_SERVICE"
+            android:process=":remote">
+            <intent-filter>
+                <action android:name="com.rainmonth.service.IRemoteAidlInterface" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".SampleIntentService"
+            android:exported="false" />
+
+        <activity android:name=".IntentServiceSampleActivity" />
+
+        <service
+            android:name=".DownloadIntentService"
+            android:exported="false" />
+    </application>
+
+</manifest>

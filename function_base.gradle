@@ -16,6 +16,8 @@ if (functionName == "database") {
     println("应用" + functionName + "配置")
 } else if (functionName == "floatview") {
     println("应用" + functionName + "配置")
+} else if (functionName == "service") {
+    println("应用" + functionName + "配置")
 } else {
     println("应用" + functionName + "配置")
 }

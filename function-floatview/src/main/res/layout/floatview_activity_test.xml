@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="HardcodedText,SpUsage,ContentDescription">
+
+    <ImageView
+        android:layout_width="60dp"
+        android:layout_height="60dp" />
+
+    <ImageView
+        android:id="@+id/iv_close"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:padding="10dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="16dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <!--学习目标-->
+        <TextView
+            android:id="@+id/tv_learn_goal_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="8dp"
+            android:textColor="#3f3f3f"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            tools:text="学习目标(30字)" />
+
+        <TextView
+            android:id="@+id/tv_character_read_intro"
+            android:layout_width="match_parent"
+            android:layout_height="34dp"
+            android:layout_marginStart="21dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="21dp"
+            android:layout_marginBottom="15dp"
+            android:gravity="center_vertical"
+            android:paddingStart="9dp"
+            android:paddingEnd="12dp"
+            android:text="识字阅读模式介绍"
+            android:textColor="#999999"
+            android:textSize="12dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_word_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="22dp"
+            android:layout_marginEnd="22dp" />
+
+    </LinearLayout>
+
+</FrameLayout>
