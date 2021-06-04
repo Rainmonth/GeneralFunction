@@ -1,2 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.rainmonth.imageloader" />
+    package="com.rainmonth.imageloader">
+
+    <!--加载网络图片需要网络权限-->
+    <uses-permission android:name="android.permission.INTERNET" />
+</manifest>
