@@ -5,13 +5,16 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.Surface;
+import android.view.WindowManager;
 
 import java.lang.reflect.Method;
 
@@ -22,6 +25,10 @@ public class DensityUtils {
 
     private static DisplayMetrics sDisplayMetrics;
 
+    public static int getDisplayWidth() {
+        return getDisplayWidth(Utils.getApp());
+    }
+
     /**
      * get screen width
      *
@@ -31,6 +38,10 @@ public class DensityUtils {
     public static int getDisplayWidth(Context context) {
         initDisplayMetrics(context);
         return sDisplayMetrics.widthPixels;
+    }
+
+    public static int getDisplayHeight() {
+        return getDisplayHeight(Utils.getApp());
     }
 
     /**
@@ -44,6 +55,11 @@ public class DensityUtils {
         return sDisplayMetrics.heightPixels;
     }
 
+
+    private static synchronized void initDisplayMetrics() {
+        initDisplayMetrics(Utils.getApp());
+    }
+
     /**
      * init display metrics
      *
@@ -51,6 +67,10 @@ public class DensityUtils {
      */
     private static synchronized void initDisplayMetrics(Context context) {
         sDisplayMetrics = context.getResources().getDisplayMetrics();
+    }
+
+    public static boolean isLandscape() {
+        return isLandscape(Utils.getApp());
     }
 
     /**
@@ -61,6 +81,10 @@ public class DensityUtils {
      */
     public static boolean isLandscape(Context context) {
         return context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+    }
+
+    public static boolean isPortrait() {
+        return isPortrait(Utils.getApp());
     }
 
     /**
@@ -121,6 +145,11 @@ public class DensityUtils {
                 "fingerprint = " + getReformatFingerprint());
     }
 
+
+    public static float getDensity() {
+        return getDensity(Utils.getApp());
+    }
+
     /**
      * 获取设备density
      *
@@ -129,6 +158,11 @@ public class DensityUtils {
      */
     public static float getDensity(Context context) {
         return context.getResources().getDisplayMetrics().density;
+    }
+
+
+    public static int getDensityDpi() {
+        return getDensityDpi(Utils.getApp());
     }
 
     /**
@@ -141,6 +175,11 @@ public class DensityUtils {
         return context.getResources().getDisplayMetrics().densityDpi;
     }
 
+
+    public static int dip2px(float dpValue) {
+        return dip2px(Utils.getApp(), dpValue);
+    }
+
     /**
      * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
      *
@@ -151,6 +190,10 @@ public class DensityUtils {
     public static int dip2px(Context context, float dpValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + DensityUtils.DOT_FIVE);
+    }
+
+    public static int px2dip(float pxValue) {
+        return px2dip(Utils.getApp(), pxValue);
     }
 
     /**
@@ -419,5 +462,21 @@ public class DensityUtils {
         return context.getWindowManager().getDefaultDisplay().getRotation() == Surface.ROTATION_90 ||
                 context.getWindowManager().getDefaultDisplay().getRotation() == Surface.ROTATION_270;
 
+    }
+
+    public static int getRealScreenHeight() {
+        return getRealScreenHeight(Utils.getApp());
+    }
+
+    public static int getRealScreenHeight(Context context) {
+        return getRealScreenSize(context).y;
+    }
+
+    public static Point getRealScreenSize(Context context) {
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+        Point pt = new Point();
+        display.getRealSize(pt);
+        return pt;
     }
 }
