@@ -16,7 +16,7 @@ import java.io.File;
  */
 public class UilLoadStrategy implements ILoadStrategy {
     @Override
-    public void loadImage(LoadConfig loadOption, View view, Callback callback, ExtendedOptions extendOption) {
+    public void loadImage(LoadConfig loadConfig, View view, Callback callback, ExtendedOptions extendOption) {
 
     }
 
@@ -26,32 +26,32 @@ public class UilLoadStrategy implements ILoadStrategy {
     }
 
     @Override
-    public void clearCacheKey(int type, LoadConfig loadOption) {
+    public void clearCacheKey(int type, LoadConfig loadConfig) {
 
     }
 
     @Override
-    public boolean isCache(LoadConfig loadOption, ExtendedOptions extendedOption) {
+    public boolean isCache(LoadConfig loadConfig, ExtendedOptions extendedOption) {
         return false;
     }
 
     @Override
-    public File getLocalCache(LoadConfig loadOption, ExtendedOptions extendOption) {
+    public File getLocalCache(LoadConfig loadConfig, ExtendedOptions extendOption) {
         return null;
     }
 
     @Override
-    public Bitmap getLocalCacheBitmap(LoadConfig loadOption, ExtendedOptions extendOption) {
+    public Bitmap getLocalCacheBitmap(LoadConfig loadConfig, ExtendedOptions extendOption) {
         return null;
     }
 
     @Override
-    public long getCacheSize() {
+    public long getCacheSize(LoadConfig loadConfig) {
         return 0;
     }
 
     @Override
-    public void downloadOnly(LoadConfig loadOption, Callback callback, ExtendedOptions extendOption) {
+    public void downloadOnly(LoadConfig loadConfig, Callback callback, ExtendedOptions extendOption) {
 
     }
 }

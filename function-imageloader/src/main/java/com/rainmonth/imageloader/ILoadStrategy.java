@@ -17,12 +17,12 @@ public interface ILoadStrategy {
     /**
      * 加载图片
      *
-     * @param loadOption   加载图片配置
+     * @param loadConfig   加载图片配置
      * @param view         加载目标对象，ImageView or SimpleDraweeView
      * @param callback     加载回调
      * @param extendOption 额外配置接口
      */
-    void loadImage(LoadConfig loadOption, View view, Callback callback, ExtendedOptions extendOption);
+    void loadImage(LoadConfig loadConfig, View view, Callback callback, ExtendedOptions extendOption);
 
     /**
      * 清除缓存
@@ -41,36 +41,36 @@ public interface ILoadStrategy {
      *                   {@link LoaderConst.CacheClearType#CLEAR_ALL_CACHE}
      *                   {@link LoaderConst.CacheClearType#CLEAR_MEM_CACHE}
      *                   {@link LoaderConst.CacheClearType#CLEAR_DISK_CACHE}
-     * @param loadOption 加载图片配置
+     * @param loadConfig 加载图片配置
      */
-    void clearCacheKey(int type, LoadConfig loadOption);
+    void clearCacheKey(int type, LoadConfig loadConfig);
 
     /**
      * 是否已经缓存到本地
      *
-     * @param loadOption     加载图片配置
+     * @param loadConfig     加载图片配置
      * @param extendedOption 额外配置接口
      * @return Boolean 是否已经缓存到本地
      */
-    boolean isCache(LoadConfig loadOption, ExtendedOptions extendedOption);
+    boolean isCache(LoadConfig loadConfig, ExtendedOptions extendedOption);
 
     /**
      * 获取本地缓存
      *
-     * @param loadOption   加载图片配置
+     * @param loadConfig   加载图片配置
      * @param extendOption 额外配置接口
      * @return File
      */
-    File getLocalCache(LoadConfig loadOption, ExtendedOptions extendOption);
+    File getLocalCache(LoadConfig loadConfig, ExtendedOptions extendOption);
 
     /**
      * 获取本地缓存bitmap
      *
-     * @param loadOption   加载图片配置
+     * @param loadConfig   加载图片配置
      * @param extendOption 额外配置接口
      * @return Bitmap
      */
-    Bitmap getLocalCacheBitmap(LoadConfig loadOption, ExtendedOptions extendOption);
+    Bitmap getLocalCacheBitmap(LoadConfig loadConfig, ExtendedOptions extendOption);
 
 
     /**
@@ -78,23 +78,25 @@ public interface ILoadStrategy {
      *
      * @return Long
      */
-    long getCacheSize();
+    long getCacheSize(LoadConfig loadConfig);
 
 
     /**
      * 下载图片
      *
-     * @param loadOption   加载图片配置
+     * @param loadConfig   加载图片配置
      * @param callback     加载回调
      * @param extendOption 额外配置接口
      */
-    void downloadOnly(LoadConfig loadOption, Callback callback, ExtendedOptions extendOption);
+    void downloadOnly(LoadConfig loadConfig, Callback callback, ExtendedOptions extendOption);
 
     /**
-     * 额外配置支持
+     * 不同加载库可能支持的额外配置
      */
     interface ExtendedOptions {
         /**
+         * 不同的图片加载库 独有的一些配置
+         *
          * @param option 配置对象
          *               Glide    com.bumptech.glide.request.RequestOptions
          *               Picasso  com.squareup.picasso.RequestCreator
