@@ -6,13 +6,165 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <com.rainmonth.function.roundhelper.RoundFrameLayout
+        android:id="@+id/fl_1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintDimensionRatio="h, 250:320"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.3"
+        app:rRadius="16dp"
+        app:rStrokeColor="#F6F8FB"
+        app:rStrokeWidth="1dp">
 
+        <ImageView
+            android:id="@+id/img1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/test_1" />
+
+        <TextView
+            android:id="@+id/flag_hasRead1"
+            android:layout_width="40dp"
+            android:layout_height="20dp"
+            android:layout_gravity="top|left"
+            android:background="@drawable/bg_has_read"
+            android:gravity="center"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="已读"
+            android:textColor="@android:color/white"
+            android:textSize="12dp"
+            android:visibility="visible"
+            tools:ignore="RtlHardcoded" />
+
+        <TextView
+            android:id="@+id/count1"
+            android:layout_width="40dp"
+            android:layout_height="20dp"
+            android:layout_gravity="start|bottom"
+            android:background="@drawable/bg_count"
+            android:gravity="center"
+            android:paddingLeft="7dp"
+            android:paddingRight="7dp"
+            android:text="35本"
+            android:textColor="@android:color/white"
+            android:textSize="11dp"
+            android:visibility="visible"
+            tools:ignore="SpUsage"
+            tools:visibility="visible" />
+
+    </com.rainmonth.function.roundhelper.RoundFrameLayout>
+
+    <com.rainmonth.function.roundhelper.RoundFrameLayout
+        android:id="@+id/fl_2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintDimensionRatio="h, 250:320"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fl_1"
+        app:layout_constraintWidth_percent="0.3"
+        app:rRadius="16dp"
+        app:rStrokeColor="#FF0000"
+        app:rStrokeWidth="1dp">
+
+        <ImageView
+            android:id="@+id/img2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/test_2" />
+
+        <TextView
+            android:id="@+id/flag_hasRead2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|left"
+            android:background="@drawable/round_read_bg"
+            android:paddingLeft="4dp"
+            android:paddingTop="2dp"
+            android:paddingRight="4dp"
+            android:paddingBottom="2dp"
+            android:text="已读"
+            android:textColor="@android:color/white"
+            android:textSize="12dp"
+            android:visibility="visible"
+            tools:ignore="RtlHardcoded" />
+
+        <TextView
+            android:id="@+id/count2"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_gravity="start|bottom"
+            android:background="@drawable/shape_bg_collection_count"
+            android:gravity="center"
+            android:paddingStart="7dp"
+            android:paddingEnd="7dp"
+            android:text="35本"
+            android:textColor="@android:color/white"
+            android:textSize="11dp"
+            android:visibility="visible"
+            tools:ignore="SpUsage"
+            tools:visibility="visible" />
+    </com.rainmonth.function.roundhelper.RoundFrameLayout>
+
+    <com.rainmonth.function.roundhelper.RoundFrameLayout
+        android:id="@+id/fl_3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintDimensionRatio="h, 250:320"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fl_2"
+        app:layout_constraintWidth_percent="0.3"
+        app:rRadius="16dp"
+        app:rStrokeColor="#FF0000"
+        app:rStrokeWidth="1dp">
+
+        <ImageView
+            android:id="@+id/img3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/test_3" />
+
+        <TextView
+            android:id="@+id/flag_hasRead3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|left"
+            android:background="@drawable/round_read_bg"
+            android:paddingLeft="4dp"
+            android:paddingTop="2dp"
+            android:paddingRight="4dp"
+            android:paddingBottom="2dp"
+            android:text="已读"
+            android:textColor="@android:color/white"
+            android:textSize="12dp"
+            android:visibility="visible"
+            tools:ignore="RtlHardcoded" />
+
+        <TextView
+            android:id="@+id/count3"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_gravity="start|bottom"
+            android:background="@drawable/shape_bg_collection_count"
+            android:gravity="center"
+            android:paddingStart="7dp"
+            android:paddingEnd="7dp"
+            android:text="35本"
+            android:textColor="@android:color/white"
+            android:textSize="11dp"
+            android:visibility="visible"
+            tools:ignore="SpUsage"
+            tools:visibility="visible" />
+    </com.rainmonth.function.roundhelper.RoundFrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
