@@ -4,21 +4,19 @@ import android.graphics.Bitmap;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.facebook.common.executors.CallerThreadExecutor;
-import com.facebook.common.references.CloseableReference;
 import com.facebook.datasource.BaseDataSubscriber;
 import com.facebook.datasource.DataSource;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.core.ImagePipeline;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.core.ImagePipelineFactory;
-import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
-import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.rainmonth.imageloader.ILoadStrategy;
 import com.rainmonth.imageloader.LoadConfig;
+import com.rainmonth.imageloader.LoaderConst;
 import com.rainmonth.utils.Utils;
 
 import java.io.File;
@@ -30,7 +28,7 @@ import java.io.File;
  * @author randy
  * @date 2021/06/04 11:52 AM
  */
-public class FrescoLoadStrategy implements ILoadStrategy {
+public class FrescoLoadStrategy extends BaseFrescoLoadStrategy implements ILoadStrategy {
 
     public FrescoLoadStrategy(ImagePipelineConfig config) {
         if (config == null) {
@@ -43,12 +41,32 @@ public class FrescoLoadStrategy implements ILoadStrategy {
 
     @Override
     public void loadImage(LoadConfig loadConfig, View view, Callback callback, ExtendedOptions extendOption) {
+        if (!(view instanceof SimpleDraweeView)) {
+            throw new IllegalArgumentException("view must be ImageView");
+        }
 
+        try {
+            SimpleDraweeView target = (SimpleDraweeView) view;
+            initFrescoView(target, loadConfig);
+            ImageRequest imageRequest = buildImageRequestWithResource(loadConfig, extendOption);
+            ImageRequest lowRequest = buildLowImageRequest(target, loadConfig, extendOption);
+            target.setController(buildDraweeController(target, loadConfig, callback, imageRequest, lowRequest));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void clearCache(int type) {
-
+        if (type == LoaderConst.CacheClearType.CLEAR_ALL_CACHE) {
+            Fresco.getImagePipeline().clearCaches();
+        }
+        if (type == LoaderConst.CacheClearType.CLEAR_MEM_CACHE) {
+            Fresco.getImagePipeline().clearMemoryCaches();
+        }
+        if (type == LoaderConst.CacheClearType.CLEAR_DISK_CACHE) {
+            Fresco.getImagePipeline().clearDiskCaches();
+        }
     }
 
     @Override
@@ -58,7 +76,7 @@ public class FrescoLoadStrategy implements ILoadStrategy {
 
     @Override
     public boolean isCache(LoadConfig loadConfig, ExtendedOptions extendedOption) {
-        return false;
+        return isCached(Utils.getApp(), loadConfig.mUri);
     }
 
     @Override
@@ -100,21 +118,6 @@ public class FrescoLoadStrategy implements ILoadStrategy {
                 }
             }
         }, CallerThreadExecutor.getInstance());
-    }
-
-
-    /**
-     * 根据配置获取 {@link ImageRequest}
-     *
-     * @param loadConfig      通用配置
-     * @param extendedOptions 加载框架扩展配置
-     * @return ImageRequest
-     */
-    private ImageRequest buildImageRequestWithResource(LoadConfig loadConfig,
-                                                       ExtendedOptions extendedOptions) {
-
-
-        return null;
     }
 
 }
