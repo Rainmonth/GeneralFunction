@@ -22,7 +22,8 @@ public interface ILoadStrategy {
      * @param callback     加载回调
      * @param extendOption 额外配置接口
      */
-    void loadImage(LoadConfig loadConfig, View view, Callback callback, ExtendedOptions extendOption);
+    void loadImage(LoadConfig loadConfig, View view, Callback callback,
+                   ExtendedOptions extendOption);
 
     /**
      * 清除缓存
