@@ -46,12 +46,12 @@ public class LoadConfig {
     /**
      * 最大磁盘缓存容量
      */
-    public long mMaxDiskCacheSize = 250 * 1024 * 1024L;
+    public long mMaxDiskCacheSize = 256 * 1024 * 1024L;
 
     /**
      * 最大内存缓存容量
      */
-    public long mMaxMemCacheSize = 250 * 1024 * 1024L;
+    public long mMaxMemCacheSize = 16 * 1024 * 1024L;
 
     public ArrayList<Object> mTransformations = new ArrayList<>();
 
