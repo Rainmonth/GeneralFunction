@@ -18,6 +18,7 @@ public class FloatViewMainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LogUtils.init(true);
         setContentView(R.layout.floatview_activity_float_view_main);
 
         floatViewConfig = new FloatViewConfig();
@@ -48,13 +49,14 @@ public class FloatViewMainActivity extends AppCompatActivity {
         FloatViewConfig config = new FloatViewConfig.Builder()
                 .setGlobalFloat(true)
                 .setAutoCompat(true)
-                .setHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
-                .setWidth(ViewGroup.LayoutParams.WRAP_CONTENT)
+                .setHeight(ViewGroup.LayoutParams.MATCH_PARENT)
+                .setWidth(ViewGroup.LayoutParams.MATCH_PARENT)
                 .setGravity(Gravity.BOTTOM | Gravity.END)
+                .setItemViewResId(R.layout.floatview_default_item_layout)
                 .build();
         FloatViewManager.get()
                 .with(this, FloatViewManager.FLOAT_VIEW_ID_MAIN_BOTTOM_LEFT)
-                .config(config)
+                .config(FloatViewManager.FLOAT_VIEW_ID_MAIN_BOTTOM_LEFT, config)
                 .add(FloatViewManager.FLOAT_VIEW_ID_MAIN_BOTTOM_LEFT)
                 .show(FloatViewManager.FLOAT_VIEW_ID_MAIN_BOTTOM_LEFT);
     }
@@ -62,15 +64,16 @@ public class FloatViewMainActivity extends AppCompatActivity {
     private void handleAdd2Click() {
         LogUtils.d("FloatView", "handleAdd2Click");
         FloatViewConfig config = new FloatViewConfig.Builder()
-                .setGlobalFloat(true)
+                .setGlobalFloat(false)
                 .setAutoCompat(true)
                 .setHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
                 .setWidth(ViewGroup.LayoutParams.WRAP_CONTENT)
-                .setGravity(Gravity.CENTER)
+                .setItemViewResId(R.layout.floatview_item_layout)
+                .setGravity(Gravity.CENTER|Gravity.END)
                 .build();
         FloatViewManager.get()
                 .with(this, FloatViewManager.FLOAT_VIEW_ID_MAIN_CENTER)
-                .config(config)
+                .config(FloatViewManager.FLOAT_VIEW_ID_MAIN_CENTER, config)
                 .add(FloatViewManager.FLOAT_VIEW_ID_MAIN_CENTER)
                 .show(FloatViewManager.FLOAT_VIEW_ID_MAIN_CENTER);
     }

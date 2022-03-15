@@ -35,7 +35,7 @@ dependencies {
     api rootProject.ext.androidx.material
 
     api rootProject.ext.json.gson
-    implementation "androidx.core:core-ktx:+"
+    implementation "androidx.core:core-ktx:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 repositories {

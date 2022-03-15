@@ -1,14 +1,18 @@
 package com.rainmonth.floatview;
 
+import static android.content.Context.WINDOW_SERVICE;
+
 import android.app.Activity;
-import android.graphics.Color;
+import android.content.pm.PackageManager;
+import android.graphics.PixelFormat;
 import android.os.Build;
 import android.provider.Settings;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 
@@ -19,8 +23,6 @@ import com.rainmonth.utils.log.LogUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
-
-import static android.content.Context.WINDOW_SERVICE;
 
 /**
  * 悬浮窗管理器
@@ -34,13 +36,15 @@ public class FloatViewManager {
 
     private WeakReference<FrameLayout> mContainerRef;
     private WindowManager mManager;
-    // todo 由于多个悬浮窗的配置可能不同，如果都采用mConfig这个引用，可能会达不到每个悬浮窗分开配置的能力
-    private FloatViewConfig mConfig;
     // 为解决 在未获取到权限首次请求显示悬浮窗时不显示问题（问题原因：show 方法调用的时候，相应的FloatView还未添加导致不能显示）
     private boolean isShowLater = false;        // 辅助参数，是否需要稍后展示（可能show调用的时候，FloatView还没准备好）
 
     // 用来进行 FloatView 的管理
-    private HashMap<Integer, View> mFloatViewMap = new HashMap<>();
+    private final HashMap<Integer, View> mFloatViewMap = new HashMap<>();
+    /**
+     * 由于多个悬浮窗的配置可能不同，如果都采用mConfig这个引用，可能会达不到每个悬浮窗分开配置的能力
+     */
+    private final HashMap<Integer, FloatViewConfig> mConfigMap = new HashMap<>();
 
     private static volatile FloatViewManager mInstance;
 
@@ -67,7 +71,7 @@ public class FloatViewManager {
             mManager = (WindowManager) Utils.getApp().getSystemService(WINDOW_SERVICE);
         }
         if (mContainerRef != null) {
-            if (mContainerRef.get() != getRootView(activity)) { // 不是同一个页面，先移除floatView，在更新引用
+            if (mContainerRef.get() != getRootView(activity)) { // 不是同一个页面，先移除floatView，再更新引用
                 View floatView = getFloatView(floatViewId);
                 mContainerRef.get().removeView(floatView);
                 mContainerRef = new WeakReference<>(getRootView(activity));
@@ -80,18 +84,27 @@ public class FloatViewManager {
         return this;
     }
 
-    public FloatViewManager config(FloatViewConfig config) {
-        this.mConfig = config;
+    public FloatViewManager config(int id, FloatViewConfig config) {
+        if (config == null) {
+            throw new IllegalArgumentException("Config should not be null!");
+        }
+        if (!mConfigMap.containsKey(id)) {
+            mConfigMap.put(id, config);
+        } else {
+            // todo update specify config
+//            this.mConfig = config;
+        }
         return this;
     }
 
     public FloatViewManager add(int floatViewId) {
         LogUtils.d(TAG, "add, floatViewId: " + floatViewId);
-        if (mConfig == null) {
-            mConfig = getDefaultConfig();
+        FloatViewConfig config = mConfigMap.get(floatViewId);
+        if (config == null) {
+            throw new IllegalArgumentException("Config should not be null!");
         }
 
-        if (mConfig.isGlobalFloat) {
+        if (config.isGlobalFloat) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestDrawOverlays(floatViewId);
             } else {
@@ -105,7 +118,8 @@ public class FloatViewManager {
 
     public void remove(int floatViewId) {
         LogUtils.d(TAG, "remove(), floatViewId: " + floatViewId);
-        if (mConfig.isGlobalFloat) {
+        FloatViewConfig config = checkConfig(floatViewId);
+        if (config.isGlobalFloat) {
             removeGlobalFloatView(floatViewId);
         } else {
             removeAppFloatView(floatViewId);
@@ -125,6 +139,7 @@ public class FloatViewManager {
         if (mFloatViewMap.containsKey(floatViewId)) {
             mManager.removeView(mFloatViewMap.get(floatViewId));
             mFloatViewMap.remove(floatViewId);
+//            mConfigMap.remove(floatViewId);
         }
     }
 
@@ -230,11 +245,14 @@ public class FloatViewManager {
             LogUtils.d(TAG, "addGlobalFloatView, windowManager is null");
             return;
         }
+        LogUtils.i(TAG, "添加之前先移除");
         removeGlobalFloatView(floatViewId);
 
         View floatView = getFloatView(floatViewId);
         mFloatViewMap.put(floatViewId, floatView);
-        mManager.addView(floatView, getGlobalLayoutParams());
+        WindowManager.LayoutParams params = getGlobalLayoutParams(floatViewId);
+        floatView.setLayoutParams(params);
+        mManager.addView(floatView, params);
         floatView.setVisibility(View.GONE);
     }
 
@@ -255,7 +273,7 @@ public class FloatViewManager {
         }
         View floatView = getFloatView(floatViewId);
         mFloatViewMap.put(floatViewId, floatView);
-        frameLayout.addView(floatView, getAppLayoutParams());
+        frameLayout.addView(floatView, getAppLayoutParams(floatViewId));
         floatView.setVisibility(View.GONE);
     }
 
@@ -265,7 +283,8 @@ public class FloatViewManager {
      */
     private void handleDrawOverlaysDenied(int floatViewId) {
         LogUtils.d(TAG, "handleDrawOverlaysDenied(), floatViewId: " + floatViewId);
-        if (mConfig.autoCompat) {
+        FloatViewConfig config = checkConfig(floatViewId);
+        if (config.autoCompat) {
             addAppFloatView(floatViewId);
             if (isShowLater) {
                 LogUtils.d(TAG, "handleDrawOverlaysDenied(), floatViewId: " + floatViewId + " show after permission denied!");
@@ -281,11 +300,13 @@ public class FloatViewManager {
         if (mFloatViewMap.containsKey(floatViewId)) {
             return mFloatViewMap.get(floatViewId);
         } else {
+            FloatViewConfig config = checkConfig(floatViewId);
+            FloatViewContainer container = new FloatViewContainer(Utils.getApp());
+
+            container.bindView(config);
             // 采用 Application Context
-            TextView button = new Button(Utils.getApp());
-            button.setText("我是一个悬浮窗");
-            button.setBackgroundColor(Color.BLUE);
-            return button;
+            mFloatViewMap.put(floatViewId, container);
+            return container;
         }
     }
 
@@ -306,22 +327,68 @@ public class FloatViewManager {
      *
      * @return 全局布局参数
      */
-    private WindowManager.LayoutParams getGlobalLayoutParams() {
+    private WindowManager.LayoutParams getGlobalLayoutParams(int floatViewId) {
         LogUtils.d(TAG, "getGlobalLayoutParams()");
+        FloatViewConfig config = checkConfig(floatViewId);
         WindowManager.LayoutParams globalParams = new WindowManager.LayoutParams();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             globalParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
         } else {
             globalParams.type = WindowManager.LayoutParams.TYPE_PHONE;
         }
-        globalParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
-        globalParams.width = mConfig.width;
-        globalParams.height = mConfig.height;
-        globalParams.gravity = mConfig.gravity;
-        // todo margin 设置
-//        globalParams.verticalMargin = ;
-//        globalParams.horizontalMargin = ;
+
+        //设置图片格式，效果为背景透明
+        globalParams.format = PixelFormat.RGBA_8888;
+        //设置浮动窗口不可聚焦（实现操作除浮动窗口外的其他可见窗口的操作）
+        globalParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+        //调整悬浮窗显示的停靠位置为左侧置顶
+        globalParams.gravity = Gravity.START | Gravity.TOP;
+
+        DisplayMetrics dm = new DisplayMetrics();
+        //取得窗口属性
+        mManager.getDefaultDisplay().getMetrics(dm);
+        //窗口的宽度
+        int screenWidth = dm.widthPixels;
+        //窗口高度
+        int screenHeight = dm.heightPixels;
+        //以屏幕左上角为原点，设置x、y初始值，相对于gravity
+        globalParams.x = screenWidth;
+        globalParams.y = screenHeight;
+
+        //设置悬浮窗口长宽数据
+        globalParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        globalParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        LogUtils.d(TAG, "getGlobalLayoutParams()");
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            globalParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+//        } else {
+//            globalParams.type = WindowManager.LayoutParams.TYPE_PHONE;
+//        }
+
+        //设置图片格式，效果为背景透明
+//        globalParams.format = PixelFormat.RGBA_8888;
+        //设置浮动窗口不可聚焦（实现操作除浮动窗口外的其他可见窗口的操作）
+//        globalParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+//        globalParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
+        //调整悬浮窗显示的停靠位置为左侧置顶
+
+//        DisplayMetrics dm = new DisplayMetrics();
+//        //取得窗口属性
+//        mManager.getDefaultDisplay().getMetrics(dm);
+//
+//        globalParams.width = config.width;
+//        globalParams.height = config.height;
+//        globalParams.gravity = config.gravity;
         return globalParams;
+    }
+
+    private FloatViewConfig checkConfig(int floatViewId) {
+        FloatViewConfig config = mConfigMap.get(floatViewId);
+        if (config == null) {
+            throw new IllegalArgumentException("Config should not be null!");
+        }
+        return config;
     }
 
     /**
@@ -329,10 +396,11 @@ public class FloatViewManager {
      *
      * @return 应用内布局参数
      */
-    private FrameLayout.LayoutParams getAppLayoutParams() {
+    private FrameLayout.LayoutParams getAppLayoutParams(int floatViewId) {
         LogUtils.d(TAG, "getAppLayoutParams()");
-        FrameLayout.LayoutParams appParams = new FrameLayout.LayoutParams(mConfig.width, mConfig.height);
-        appParams.gravity = mConfig.gravity;
+        FloatViewConfig config = checkConfig(floatViewId);
+        FrameLayout.LayoutParams appParams = new FrameLayout.LayoutParams(config.width, config.height);
+        appParams.gravity = config.gravity;
         // todo margin 设置
 //        appParams.setMargins();
         return appParams;

@@ -1,7 +1,7 @@
 apply from: "../function_base.gradle"
 
 dependencies {
-    implementation 'com.facebook.fresco:fresco:2.4.0'
+    implementation 'com.facebook.fresco:fresco:2.5.0'
     implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 
     // 使用 glide

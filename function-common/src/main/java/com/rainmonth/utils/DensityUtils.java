@@ -140,7 +140,7 @@ public class DensityUtils {
                 "densityDpi = " + getDensityDpi(context) + "\n" +
                 "width = " + getScreenWidth(context) + "\n" +
                 "height = " + getScreenHeight(context) + "\n" +
-                "statusBarHeight = " + getStatusBarHeight(context) + "\n" +
+                "statusBarHeight = " + getStatusBarHeight() + "\n" +
                 "deviceId = " + getDeviceId(context) + "\n" +
                 "fingerprint = " + getReformatFingerprint());
     }
@@ -296,39 +296,30 @@ public class DensityUtils {
     }
 
     /**
+     * 状态栏高度
+     */
+    private static int statusBarHeight = 0;
+
+    /**
      * 采用反射获取状态栏的高度
      *
      * @param context 上下文
      * @return 状态栏的高度
      */
-    public static int getStatusBarHeight(Context context) {
-        int statusHeight;
-        Rect localRect = new Rect();
-        ((Activity) context).getWindow().getDecorView()
-                .getWindowVisibleDisplayFrame(localRect);
-        statusHeight = localRect.top;
-        if (0 == statusHeight) {
-            Class<?> localClass;
-            try {
-                localClass = Class.forName("com.android.internal.R$dimen");
-                Object localObject = localClass.newInstance();
-                int i = Integer.parseInt(localClass.getField("status_bar_height").get(localObject).toString());
-                statusHeight = context.getResources().getDimensionPixelSize(i);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
+    public static int getStatusBarHeight() {
+
+        if (statusBarHeight <= 0) {
+            if (Utils.getApp() != null) {
+                int resourceId = Utils.getApp().getResources().getIdentifier("status_bar_height", "dimen", "android");
+                if (resourceId > 0) {
+                    // 根据资源ID获取响应的尺寸值
+                    statusBarHeight = Utils.getApp().getResources().getDimensionPixelSize(resourceId);
+                }
             }
         }
-        return statusHeight;
+
+
+        return statusBarHeight;
     }
 
     /**

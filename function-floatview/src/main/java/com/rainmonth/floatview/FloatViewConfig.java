@@ -3,6 +3,8 @@ package com.rainmonth.floatview;
 import android.view.Gravity;
 import android.view.ViewGroup;
 
+import androidx.annotation.LayoutRes;
+
 /**
  * 悬浮View配置
  */
@@ -24,6 +26,9 @@ public class FloatViewConfig {
     // gravity
     public int gravity = Gravity.END | Gravity.BOTTOM;
 
+    @LayoutRes
+    public int itemViewRes = -1;
+
     public FloatViewConfig() {
 
     }
@@ -37,6 +42,7 @@ public class FloatViewConfig {
         this.width = builder.width;
         this.height = builder.height;
         this.gravity = builder.gravity;
+        this.itemViewRes = builder.itemViewResId;
     }
 
     static class Builder {
@@ -56,6 +62,9 @@ public class FloatViewConfig {
         private int height = ViewGroup.LayoutParams.WRAP_CONTENT;
         // gravity
         private int gravity = Gravity.END | Gravity.BOTTOM;
+        // 子View resId
+        @LayoutRes
+        public int itemViewResId = -1;
 
 
         public boolean isGlobalFloat() {
@@ -100,7 +109,7 @@ public class FloatViewConfig {
 
         public Builder setDragMode(boolean dragMode) {
             isDragMode = dragMode;
-            return  this;
+            return this;
         }
 
         public int getWidth() {
@@ -127,6 +136,15 @@ public class FloatViewConfig {
 
         public Builder setGravity(int gravity) {
             this.gravity = gravity;
+            return this;
+        }
+
+        public int getItemViewResId() {
+            return itemViewResId;
+        }
+
+        public Builder setItemViewResId(int itemViewResId) {
+            this.itemViewResId = itemViewResId;
             return this;
         }
 

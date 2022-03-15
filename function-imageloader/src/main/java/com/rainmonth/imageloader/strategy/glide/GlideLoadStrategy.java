@@ -120,7 +120,7 @@ public class GlideLoadStrategy implements ILoadStrategy {
      */
     private void clearMemCacheKey(LoadConfig loadConfig) {
         GlideCacheKey memKey = new GlideCacheKey(loadConfig.mUri, EmptySignature.obtain());
-        MemoryCache cache = ReflectionHelper.INSTANCE.getField(getContext(), "memoryCache");
+        MemoryCache cache = ReflectionHelper.INSTANCE.getField(Glide.get(getContext()), "memoryCache");
         cache.remove(memKey);
     }
 
