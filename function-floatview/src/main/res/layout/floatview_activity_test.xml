@@ -35,7 +35,7 @@
             android:textColor="#3f3f3f"
             android:textSize="20dp"
             android:textStyle="bold"
-            tools:text="学习目标(30字)" />
+            android:text="学习目标(30字)" />
 
         <TextView
             android:id="@+id/tv_character_read_intro"

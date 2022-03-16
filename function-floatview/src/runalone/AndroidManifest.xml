@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.rainmonth.floatview">
 
@@ -15,6 +16,7 @@
         <activity
             android:name=".TestActivity"
             android:configChanges="orientation|screenSize" />
+        <activity android:name=".DemoKotlinActivity" />
     </application>
 
 

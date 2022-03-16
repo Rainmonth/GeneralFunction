@@ -42,6 +42,15 @@ public class FloatViewMainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        TextView tvTestCombine = findViewById(R.id.tv_test_combine);
+        tvTestCombine.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FloatViewMainActivity.this, TestActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void handleAdd1Click() {

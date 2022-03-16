@@ -1,10 +1,12 @@
 package com.rainmonth.floatview;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,6 +30,15 @@ public class TestActivity extends AppCompatActivity {
         setContentView(R.layout.floatview_activity_test);
 
         rvWordCard = findViewById(R.id.rv_word_card);
+
+        TextView tvLabel = findViewById(R.id.tv_learn_goal_num);
+        tvLabel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TestActivity.this, DemoKotlinActivity.class);
+                startActivity(intent);
+            }
+        });
 
         GridLayoutManager manager = new GridLayoutManager(this, spanCount);
         rvWordCard.setLayoutManager(manager);

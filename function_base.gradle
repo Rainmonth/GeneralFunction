@@ -5,6 +5,8 @@ if (isRunAlone) {
 } else {
     apply plugin: 'com.android.library'
 }
+//apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'kotlin-android'
 apply from: '../module_test_config.gradle'
 if (functionName == "database") {
     println("应用" + functionName + "配置")
@@ -33,6 +35,9 @@ android({
         sourceCompatibility javaVersion
         targetCompatibility javaVersion
     }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
     defaultConfig {
         minSdkVersion rootProject.ext.android.minSdkVersion
         targetSdkVersion rootProject.ext.android.targetSdkVersion
@@ -59,7 +64,7 @@ android({
                 // 指定AndroidManifest.xml文件
                 manifest.srcFile 'src/runalone/AndroidManifest.xml'
                 // 指定Java源文件
-                java.srcDirs = ['src/main/java', 'src/runalone/java']
+                java.srcDirs = ['src/main/java', 'src/main/kotlin', 'src/runalone/java', 'src/runalone/kotlin']
                 // 指定资源文件
                 res.srcDirs = ['src/main/res', 'src/runalone/res']
             }
