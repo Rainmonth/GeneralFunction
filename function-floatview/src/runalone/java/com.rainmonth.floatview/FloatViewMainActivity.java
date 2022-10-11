@@ -56,6 +56,7 @@ public class FloatViewMainActivity extends AppCompatActivity {
     private void handleAdd1Click() {
         LogUtils.d("FloatView", "handleAdd1Click");
         FloatViewConfig config = new FloatViewConfig.Builder()
+                .setId(FloatViewManager.FLOAT_VIEW_ID_MAIN_BOTTOM_LEFT)
                 .setGlobalFloat(true)
                 .setAutoCompat(true)
                 .setHeight(ViewGroup.LayoutParams.MATCH_PARENT)
@@ -73,12 +74,13 @@ public class FloatViewMainActivity extends AppCompatActivity {
     private void handleAdd2Click() {
         LogUtils.d("FloatView", "handleAdd2Click");
         FloatViewConfig config = new FloatViewConfig.Builder()
+                .setId(FloatViewManager.FLOAT_VIEW_ID_MAIN_CENTER)
                 .setGlobalFloat(false)
                 .setAutoCompat(true)
                 .setHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
                 .setWidth(ViewGroup.LayoutParams.WRAP_CONTENT)
                 .setItemViewResId(R.layout.floatview_item_layout)
-                .setGravity(Gravity.CENTER|Gravity.END)
+                .setGravity(Gravity.CENTER | Gravity.END)
                 .build();
         FloatViewManager.get()
                 .with(this, FloatViewManager.FLOAT_VIEW_ID_MAIN_CENTER)

@@ -8,6 +8,7 @@
 
     <TextView
         android:id="@+id/tv_add1"
+        style="@style/floatview_RandyBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="添加悬浮窗1"
@@ -17,9 +18,10 @@
 
     <TextView
         android:id="@+id/tv_add2"
+        style="@style/floatview_RandyBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="添加悬浮窗2"
+        android:text="添加悬浮窗1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,6 +29,7 @@
 
     <TextView
         android:id="@+id/tv_test"
+        style="@style/floatview_RandyBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="进入测试页面"
@@ -37,6 +40,7 @@
 
     <TextView
         android:id="@+id/tv_test_combine"
+        style="@style/floatview_RandyBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="混合编译测试"

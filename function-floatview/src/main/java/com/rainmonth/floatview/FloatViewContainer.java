@@ -20,6 +20,10 @@ import com.rainmonth.utils.log.LogUtils;
 
 /**
  * 悬浮View容器
+ * 注意：
+ * 1. 这个View可以直接通过WindowManager添加到Window上；
+ * 2. 这个View可以添加到Activity的contentView上；
+ * 上面这两种情况需要进行区分，不然会因为布局参数不同而发生ClassCastException。
  */
 public class FloatViewContainer<T extends View> extends FrameLayout {
 
@@ -75,6 +79,7 @@ public class FloatViewContainer<T extends View> extends FrameLayout {
                     handleActionUp(event);
                     break;
             }
+            // todo 这里不能直接通过 return true 来处理，因为子View可能需要单独处理点击事件
             return true;
         } else {
             return super.onTouchEvent(event);
@@ -99,22 +104,39 @@ public class FloatViewContainer<T extends View> extends FrameLayout {
      * 对应View的位置
      */
     private void handleActionDown(MotionEvent event) {
-        LogUtils.i("xx", "handleActionDown");
-        mOriginalX = getX();
-        mOriginalY = getY();
+        LogUtils.i(TAG, "handleActionDown, ori(x,y):(" + getX() + "," + getY() + ")");
+        updateFloatViewPositionCompat();
         mOriginalRawX = event.getRawX();
         mOriginalRawY = event.getRawY();
         mLastTouchDownTime = System.currentTimeMillis();
     }
 
+    public void updateFloatViewPositionCompat() {
+        if (mConfig == null) {
+            LogUtils.w(TAG, "mConfig is null, please check!");
+            return;
+        }
+        if (mConfig.isGlobalFloat) {
+            mOriginalX = ((WindowManager.LayoutParams) getLayoutParams()).x;
+            mOriginalY = ((WindowManager.LayoutParams) getLayoutParams()).y;
+        } else {
+            mOriginalX = getX();
+            mOriginalY = getY();
+        }
+
+        LogUtils.i(TAG, "id:", mConfig.id, ", mOriginalX:", mOriginalX, ", mOriginalY", mOriginalY);
+    }
+
     private void handleActionMove(MotionEvent event) {
-        LogUtils.i("xx", "handleActionMove");
         float desX = mOriginalX + event.getRawX() - mOriginalRawX;
         float desY = mOriginalY + event.getRawY() - mOriginalRawY;
-
+        LogUtils.i(TAG, "handleActionMove, desX:" + desX + ", desY:" + desY);
         fixPositionWhileMoving(desX, desY);
     }
 
+    /**
+     * 全局播放器时，这里的修正方法需要修改
+     */
     private void fixPositionWhileMoving(float desX, float desY) {
         if (desX < -(getWidth() - mVisibleWidth)) {
             desX = -(getWidth() - mVisibleWidth);
@@ -122,6 +144,8 @@ public class FloatViewContainer<T extends View> extends FrameLayout {
         if (desX > mScreenWidth - mVisibleWidth) {
             desX = mScreenWidth - mVisibleWidth;
         }
+        LogUtils.i(TAG, "fixPositionWhileMoving, des(x,y):(" + desX + "," + desY + ")" +
+                "， w:" + getWidth() + ", h:" + getHeight());
         if (mConfig == null) {
             return;
         }
@@ -129,6 +153,7 @@ public class FloatViewContainer<T extends View> extends FrameLayout {
             WindowManager.LayoutParams params = (WindowManager.LayoutParams) getLayoutParams();
             params.x = (int) desX;
             params.y = (int) desY;
+            LogUtils.i(TAG, "fixPositionWhileMoving, set(x,y):(" + params.x + "," + params.y + ")");
             mManager.updateViewLayout(this, params);
         } else {
             setX(desX);

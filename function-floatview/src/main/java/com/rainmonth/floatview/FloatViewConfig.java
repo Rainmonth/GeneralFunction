@@ -9,21 +9,41 @@ import androidx.annotation.LayoutRes;
  * 悬浮View配置
  */
 public class FloatViewConfig {
-    // 是否支持全局悬浮，true 表示即使应用退到后台，也可以悬浮展示
+    /**
+     * 悬浮View的id
+     */
+    public int id;
+    /**
+     * 是否支持全局悬浮，true 表示即使应用退到后台，也可以悬浮展示
+     */
     public boolean isGlobalFloat = false;
-    // 是否自适应（即为获取到权限时 自动降级处理）
+    /**
+     * 是否自适应（即为获取到权限时 自动降级处理）
+     */
     public boolean autoCompat = true;
-    // 是否自动隐藏
+    /**
+     * 是否自动隐藏
+     */
     public boolean autoHide = false;
-    // 自动隐藏时间间隔，默认5s
+    /**
+     * 自动隐藏时间间隔，默认5s
+     */
     public int autoHideDelay = 5000;
-    // 是否是拖动模式，true 表示可以在窗口内拖动，false 表示固定位置
+    /**
+     * 是否是拖动模式，true 表示可以在窗口内拖动，false 表示固定位置
+     */
     public boolean isDragMode = true;
-    // 宽
+    /**
+     * 宽
+     */
     public int width = ViewGroup.LayoutParams.WRAP_CONTENT;
-    // 高
+    /**
+     * 高
+     */
     public int height = ViewGroup.LayoutParams.WRAP_CONTENT;
-    // gravity
+    /**
+     * gravity
+     */
     public int gravity = Gravity.END | Gravity.BOTTOM;
 
     @LayoutRes
@@ -34,6 +54,7 @@ public class FloatViewConfig {
     }
 
     private FloatViewConfig(Builder builder) {
+        this.id = builder.id;
         this.isGlobalFloat = builder.isGlobalFloat;
         this.autoCompat = builder.autoCompat;
         this.autoHide = builder.autoHide;
@@ -46,6 +67,8 @@ public class FloatViewConfig {
     }
 
     static class Builder {
+        // 悬浮View的id
+        private int id;
         // 是否支持全局悬浮，true 表示即使应用退到后台，也可以悬浮展示
         private boolean isGlobalFloat = false;
         // 是否自适应（即为获取到权限时 自动降级处理）
@@ -66,6 +89,14 @@ public class FloatViewConfig {
         @LayoutRes
         public int itemViewResId = -1;
 
+        public int getId() {
+            return id;
+        }
+
+        public Builder setId(int id) {
+            this.id = id;
+            return this;
+        }
 
         public boolean isGlobalFloat() {
             return isGlobalFloat;

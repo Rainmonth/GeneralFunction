@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="floatview_RandyBtn" parent="Widget.AppCompat.Button">
+        <item name="android:paddingLeft">@dimen/dp_16</item>
+        <item name="android:paddingRight">@dimen/dp_16</item>
+        <item name="android:paddingTop">@dimen/dp_8</item>
+        <item name="android:paddingBottom">@dimen/dp_8</item>
+    </style>
+</resources>

@@ -3,17 +3,16 @@ package com.rainmonth.floatview;
 import static android.content.Context.WINDOW_SERVICE;
 
 import android.app.Activity;
-import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import com.rainmonth.utils.PermissionUtils;
@@ -84,10 +83,13 @@ public class FloatViewManager {
         return this;
     }
 
-    public FloatViewManager config(int id, FloatViewConfig config) {
-        if (config == null) {
-            throw new IllegalArgumentException("Config should not be null!");
-        }
+    /**
+     * 配置悬浮View
+     *
+     * @param id     悬浮 View id
+     * @param config 悬浮 View 配置
+     */
+    public FloatViewManager config(int id, @NonNull FloatViewConfig config) {
         if (!mConfigMap.containsKey(id)) {
             mConfigMap.put(id, config);
         } else {
@@ -324,6 +326,7 @@ public class FloatViewManager {
 
     /**
      * 获取全局悬浮布局参数
+     * {@link #getAppLayoutParams(int)}
      *
      * @return 全局布局参数
      */
@@ -393,6 +396,7 @@ public class FloatViewManager {
 
     /**
      * 获取应用内悬浮布局参数
+     * {@link #getGlobalLayoutParams(int)}
      *
      * @return 应用内布局参数
      */
