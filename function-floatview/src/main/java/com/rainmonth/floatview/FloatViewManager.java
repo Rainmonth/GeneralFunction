@@ -376,8 +376,8 @@ public class FloatViewManager {
         FloatViewConfig config = checkConfig(floatViewId);
         FrameLayout.LayoutParams appParams = new FrameLayout.LayoutParams(config.width, config.height);
         appParams.gravity = config.gravity;
-        // todo margin 设置
-//        appParams.setMargins();
+        appParams.leftMargin = config.initPosX;
+        appParams.topMargin = config.initPosY;
         return appParams;
     }
 

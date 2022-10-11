@@ -77,14 +77,19 @@ public class FloatViewMainActivity extends AppCompatActivity {
     }
 
     private void handleAdd2Click() {
+        int screenWidth = DensityUtils.getScreenWidth(this);
+        int screenHeight = DensityUtils.getScreenHeight(this);
+        int size = DensityUtils.dip2px(100);
         FloatViewConfig config = new FloatViewConfig.Builder()
                 .setId(FloatViewManager.FLOAT_VIEW_ID_MAIN_CENTER)
                 .setGlobalFloat(false)
                 .setAutoCompat(true)
-                .setHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
-                .setWidth(ViewGroup.LayoutParams.WRAP_CONTENT)
+                .setInitPosX(screenWidth - size)
+                .setInitPosY(screenHeight - size)
+                .setHeight(size)
+                .setWidth(size)
                 .setItemViewRes(R.layout.floatview_item_layout)
-                .setGravity(Gravity.CENTER | Gravity.END)
+                .setGravity(Gravity.START | Gravity.TOP)
                 .build();
         FloatViewManager.get()
                 .with(this, FloatViewManager.FLOAT_VIEW_ID_MAIN_CENTER)
