@@ -6,8 +6,6 @@ import android.app.Activity;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.provider.Settings;
-import android.util.DisplayMetrics;
-import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -86,15 +84,16 @@ public class FloatViewManager {
     /**
      * 配置悬浮View
      *
-     * @param id     悬浮 View id
      * @param config 悬浮 View 配置
      */
-    public FloatViewManager config(int id, @NonNull FloatViewConfig config) {
-        if (!mConfigMap.containsKey(id)) {
-            mConfigMap.put(id, config);
+    public FloatViewManager config(@NonNull FloatViewConfig config) {
+        if (!mConfigMap.containsKey(config.id)) {
+            mConfigMap.put(config.id, config);
         } else {
-            // todo update specify config
-//            this.mConfig = config;
+            FloatViewConfig lastConfig = mConfigMap.get(config.id);
+            if (lastConfig != null) {
+                lastConfig.update(config);
+            }
         }
         return this;
     }
@@ -254,8 +253,8 @@ public class FloatViewManager {
         mFloatViewMap.put(floatViewId, floatView);
         WindowManager.LayoutParams params = getGlobalLayoutParams(floatViewId);
         floatView.setLayoutParams(params);
-        mManager.addView(floatView, params);
         floatView.setVisibility(View.GONE);
+        mManager.addView(floatView, params);
     }
 
     /**
@@ -345,47 +344,19 @@ public class FloatViewManager {
         //设置浮动窗口不可聚焦（实现操作除浮动窗口外的其他可见窗口的操作）
         globalParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
         //调整悬浮窗显示的停靠位置为左侧置顶
-        globalParams.gravity = Gravity.START | Gravity.TOP;
+        globalParams.gravity = config.gravity;
 
-        DisplayMetrics dm = new DisplayMetrics();
-        //取得窗口属性
-        mManager.getDefaultDisplay().getMetrics(dm);
-        //窗口的宽度
-        int screenWidth = dm.widthPixels;
-        //窗口高度
-        int screenHeight = dm.heightPixels;
         //以屏幕左上角为原点，设置x、y初始值，相对于gravity
-        globalParams.x = screenWidth;
-        globalParams.y = screenHeight;
+        globalParams.x = config.initPosX;
+        globalParams.y = config.initPosY;
 
         //设置悬浮窗口长宽数据
-        globalParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
-        globalParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        LogUtils.d(TAG, "getGlobalLayoutParams()");
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            globalParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-//        } else {
-//            globalParams.type = WindowManager.LayoutParams.TYPE_PHONE;
-//        }
-
-        //设置图片格式，效果为背景透明
-//        globalParams.format = PixelFormat.RGBA_8888;
-        //设置浮动窗口不可聚焦（实现操作除浮动窗口外的其他可见窗口的操作）
-//        globalParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-//        globalParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
-        //调整悬浮窗显示的停靠位置为左侧置顶
-
-//        DisplayMetrics dm = new DisplayMetrics();
-//        //取得窗口属性
-//        mManager.getDefaultDisplay().getMetrics(dm);
-//
-//        globalParams.width = config.width;
-//        globalParams.height = config.height;
-//        globalParams.gravity = config.gravity;
+        globalParams.width = config.width;
+        globalParams.height = config.height;
         return globalParams;
     }
 
+    @NonNull
     private FloatViewConfig checkConfig(int floatViewId) {
         FloatViewConfig config = mConfigMap.get(floatViewId);
         if (config == null) {

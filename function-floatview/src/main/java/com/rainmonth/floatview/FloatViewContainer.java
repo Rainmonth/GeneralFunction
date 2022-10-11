@@ -32,7 +32,7 @@ public class FloatViewContainer<T extends View> extends FrameLayout {
 
 
     private float mDeltaX, mDeltaY;
-    private float mOriginalX, mOriginalY, mOriginalRawX, mOriginalRawY;
+    private float mInViewX, mInViewY, mInScreenX, mInScreenY;
     private long mLastTouchDownTime;                                // 上次按下的时间
     private float mStatusBarHeight;                                 // 状态栏高度
     private float mScreenWidth, mScreenHeight;                      // 屏幕宽高
@@ -104,74 +104,50 @@ public class FloatViewContainer<T extends View> extends FrameLayout {
      * 对应View的位置
      */
     private void handleActionDown(MotionEvent event) {
-        LogUtils.i(TAG, "handleActionDown, ori(x,y):(" + getX() + "," + getY() + ")");
-        updateFloatViewPositionCompat();
-        mOriginalRawX = event.getRawX();
-        mOriginalRawY = event.getRawY();
+        // 这里不能新建，只能从已有的哪里进行转换
+        if (mWindowLayoutParam == null && getLayoutParams() instanceof WindowManager.LayoutParams) {
+            mWindowLayoutParam = (WindowManager.LayoutParams) getLayoutParams();
+        }
+        mInViewX = event.getX();
+        mInViewY = event.getY();
+        mInScreenX = event.getRawX();
+        mInScreenY = event.getRawY();
         mLastTouchDownTime = System.currentTimeMillis();
-    }
-
-    public void updateFloatViewPositionCompat() {
-        if (mConfig == null) {
-            LogUtils.w(TAG, "mConfig is null, please check!");
-            return;
-        }
-        if (mConfig.isGlobalFloat) {
-            mOriginalX = ((WindowManager.LayoutParams) getLayoutParams()).x;
-            mOriginalY = ((WindowManager.LayoutParams) getLayoutParams()).y;
-        } else {
-            mOriginalX = getX();
-            mOriginalY = getY();
-        }
-
-        LogUtils.i(TAG, "id:", mConfig.id, ", mOriginalX:", mOriginalX, ", mOriginalY", mOriginalY);
+        LogUtils.w(TAG, "ACTION_DOWN, mInViewX:" + mInViewX + ", mInViewY:" +
+                mInViewY + ", mInScreenX:" + mInScreenX + ", mInScreenY:" + mInScreenY);
     }
 
     private void handleActionMove(MotionEvent event) {
-        float desX = mOriginalX + event.getRawX() - mOriginalRawX;
-        float desY = mOriginalY + event.getRawY() - mOriginalRawY;
-        LogUtils.i(TAG, "handleActionMove, desX:" + desX + ", desY:" + desY);
-        fixPositionWhileMoving(desX, desY);
+        mInScreenX = event.getRawX();
+        mInScreenY = event.getRawY();
+        float desX = mInScreenX - mInViewX;
+        float desY = mInScreenY - mInViewY;
+        LogUtils.i(TAG, "ACTION_MOVE, mInViewX:" + mInViewX + ", mInViewY:" +
+                mInViewY + ", mInScreenX:" + mInScreenX + ", mInScreenY:" + mInScreenY);
+        updateFloatViewPosition(desX, desY);
     }
+
+    @Nullable
+    private WindowManager.LayoutParams mWindowLayoutParam;
 
     /**
      * 全局播放器时，这里的修正方法需要修改
      */
-    private void fixPositionWhileMoving(float desX, float desY) {
-        if (desX < -(getWidth() - mVisibleWidth)) {
-            desX = -(getWidth() - mVisibleWidth);
-        }
-        if (desX > mScreenWidth - mVisibleWidth) {
-            desX = mScreenWidth - mVisibleWidth;
-        }
-        LogUtils.i(TAG, "fixPositionWhileMoving, des(x,y):(" + desX + "," + desY + ")" +
-                "， w:" + getWidth() + ", h:" + getHeight());
+    private void updateFloatViewPosition(float desX, float desY) {
+        LogUtils.i(TAG, "updateFloatViewPosition, desX:" + desX + ", desY:" + desY +
+                "，width:" + getWidth() + ", height:" + getHeight());
         if (mConfig == null) {
             return;
         }
         if (mConfig.isGlobalFloat) {
-            WindowManager.LayoutParams params = (WindowManager.LayoutParams) getLayoutParams();
-            params.x = (int) desX;
-            params.y = (int) desY;
-            LogUtils.i(TAG, "fixPositionWhileMoving, set(x,y):(" + params.x + "," + params.y + ")");
-            mManager.updateViewLayout(this, params);
+            if (mWindowLayoutParam == null) {
+                return;
+            }
+            mWindowLayoutParam.x = (int) desX;
+            mWindowLayoutParam.y = (int) desY;
+            mManager.updateViewLayout(this, mWindowLayoutParam);
         } else {
             setX(desX);
-            if (desY >= 0 && desY <= mStatusBarHeight) {
-//            if (!mIsAllowCoverStatusBar) {
-//                desY = mStatusBarHeight;
-//            }
-            } else if (desY < 0) {
-//            if (mIsAllowCoverStatusBar) {
-//                desY = 0;
-//            } else {
-//                desY = mStatusBarHeight;
-//            }
-            } else if (desY >= mScreenHeight - getHeight()) {
-//            desY = mScreenHeight - getHeight() - bottomStayEdge;
-            }
-
-//        LogHelper.d(TAG, "fixPositionWhileMoving()->x:" + desX + ",y:" + desY);
             setY(desY);
         }
     }

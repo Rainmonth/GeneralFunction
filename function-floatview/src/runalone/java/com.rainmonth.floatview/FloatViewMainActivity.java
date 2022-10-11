@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.rainmonth.utils.DensityUtils;
 import com.rainmonth.utils.log.LogUtils;
 
 public class FloatViewMainActivity extends AppCompatActivity {
@@ -54,37 +55,40 @@ public class FloatViewMainActivity extends AppCompatActivity {
     }
 
     private void handleAdd1Click() {
-        LogUtils.d("FloatView", "handleAdd1Click");
+        int screenWidth = DensityUtils.getScreenWidth(this);
+        int screenHeight = DensityUtils.getScreenHeight(this);
         FloatViewConfig config = new FloatViewConfig.Builder()
                 .setId(FloatViewManager.FLOAT_VIEW_ID_MAIN_BOTTOM_LEFT)
                 .setGlobalFloat(true)
                 .setAutoCompat(true)
-                .setHeight(ViewGroup.LayoutParams.MATCH_PARENT)
-                .setWidth(ViewGroup.LayoutParams.MATCH_PARENT)
-                .setGravity(Gravity.BOTTOM | Gravity.END)
-                .setItemViewResId(R.layout.floatview_default_item_layout)
+                .setInitPosX(screenWidth)
+                .setInitPosY(screenHeight)
+                .setHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
+                .setWidth(ViewGroup.LayoutParams.WRAP_CONTENT)
+                .setGravity(Gravity.START | Gravity.TOP)
+                .setItemViewRes(R.layout.floatview_default_item_layout)
                 .build();
+
         FloatViewManager.get()
                 .with(this, FloatViewManager.FLOAT_VIEW_ID_MAIN_BOTTOM_LEFT)
-                .config(FloatViewManager.FLOAT_VIEW_ID_MAIN_BOTTOM_LEFT, config)
+                .config(config)
                 .add(FloatViewManager.FLOAT_VIEW_ID_MAIN_BOTTOM_LEFT)
                 .show(FloatViewManager.FLOAT_VIEW_ID_MAIN_BOTTOM_LEFT);
     }
 
     private void handleAdd2Click() {
-        LogUtils.d("FloatView", "handleAdd2Click");
         FloatViewConfig config = new FloatViewConfig.Builder()
                 .setId(FloatViewManager.FLOAT_VIEW_ID_MAIN_CENTER)
                 .setGlobalFloat(false)
                 .setAutoCompat(true)
                 .setHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
                 .setWidth(ViewGroup.LayoutParams.WRAP_CONTENT)
-                .setItemViewResId(R.layout.floatview_item_layout)
+                .setItemViewRes(R.layout.floatview_item_layout)
                 .setGravity(Gravity.CENTER | Gravity.END)
                 .build();
         FloatViewManager.get()
                 .with(this, FloatViewManager.FLOAT_VIEW_ID_MAIN_CENTER)
-                .config(FloatViewManager.FLOAT_VIEW_ID_MAIN_CENTER, config)
+                .config(config)
                 .add(FloatViewManager.FLOAT_VIEW_ID_MAIN_CENTER)
                 .show(FloatViewManager.FLOAT_VIEW_ID_MAIN_CENTER);
     }
