@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">GeneralFunction</string>
+    <string name="permission_request">请求相机权限和录音权限</string>
+    <string name="camera_error">打开相机遇到错误</string>
 </resources>

@@ -11,4 +11,5 @@ import com.rainmonth.imageloader.LoadConfig;
  * @date 2021/06/04 1:44 PM
  */
 public class FrescoLoadConfig extends LoadConfig {
+
 }

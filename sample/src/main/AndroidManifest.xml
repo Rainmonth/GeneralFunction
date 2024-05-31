@@ -2,6 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.rainmonth.function">
 
+    <!--在大多数情况下，硬件是可选的，因此最好在 <uses-feature> 声明中将 android:required 设置为 false，从而将
+    硬件声明为可选项，并在应用中检查是否支持硬件。如果不添加这个声明，则 Android 会假定应用必须在有该硬件的情况下才能
+    运行。因此，系统会阻止某些设备安装应用-->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,6 +19,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".camera.VideoCameraDemoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".camera.VideoCamera2DemoActivity"
+            android:exported="false" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -87,9 +87,9 @@ public class LoadConfig {
 
     /**
      * 图片处理
-     * picasso https://github.com/wasabeef/picasso-transformations
-     * glide   https://github.com/wasabeef/glide-transformations
-     * fresco  https://github.com/wasabeef/fresco-processors
+     * picasso <a href="https://github.com/wasabeef/picasso-transformations">...</a>
+     * glide   <a href="https://github.com/wasabeef/glide-transformations">...</a>
+     * fresco  <a href="https://github.com/wasabeef/fresco-processors">...</a>
      */
     public LoadConfig setTransformations(Objects transformation) {
         mTransformations.add(transformation);

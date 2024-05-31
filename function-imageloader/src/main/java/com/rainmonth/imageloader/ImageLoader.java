@@ -10,7 +10,7 @@ import java.io.File;
  * @date 2021/06/04 11:44 AM
  */
 public class ImageLoader implements ILoadStrategy{
-    private ILoadStrategy mLoadStrategy;
+    private final ILoadStrategy mLoadStrategy;
 
     public ImageLoader(ILoadStrategy loadStrategy) {
         mLoadStrategy = loadStrategy;
