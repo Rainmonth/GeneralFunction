@@ -115,7 +115,7 @@ public class BaseFrescoLoadStrategy {
         Uri uri = Uri.parse(remoteTarget);
         builder = ImageRequestBuilder.newBuilderWithSource(uri);
 
-        if (loadConfig.mSize != null) {
+        if (loadConfig.mSize != null && loadConfig.mSize.x > 0 && loadConfig.mSize.y > 0) {
             ResizeOptions options = new ResizeOptions(loadConfig.mSize.x, loadConfig.mSize.y);
             builder.setResizeOptions(options);
         } else {
