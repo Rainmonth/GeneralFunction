@@ -101,9 +101,9 @@ public class BaseFrescoLoadStrategy {
             simpleDraweeView.getHierarchy().setFailureImage(loadConfig.errorId);
         }
         if (loadConfig.isCircle) {
-            setRoundingParmas(simpleDraweeView, getRoundingParams(simpleDraweeView).setRoundAsCircle(true));
+            setRoundingParams(simpleDraweeView, getRoundingParams(simpleDraweeView).setRoundAsCircle(true));
         } else {
-            setRoundingParmas(simpleDraweeView, getRoundingParams(simpleDraweeView).setRoundAsCircle(false));
+            setRoundingParams(simpleDraweeView, getRoundingParams(simpleDraweeView).setRoundAsCircle(false));
         }
     }
 
@@ -204,7 +204,7 @@ public class BaseFrescoLoadStrategy {
         return roundingParams;
     }
 
-    void setRoundingParmas(SimpleDraweeView simpleDraweeView, RoundingParams roundingParmas) {
+    void setRoundingParams(SimpleDraweeView simpleDraweeView, RoundingParams roundingParmas) {
         simpleDraweeView.getHierarchy().setRoundingParams(roundingParmas);
     }
 }
