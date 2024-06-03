@@ -9,7 +9,7 @@ import com.rainmonth.imageloader.strategy.uil.UilLoadStrategy;
  * @author 张豪成
  * @date 2024/5/31 15:54
  */
-public class LoaderFactory {
+public class LoaderStrategyFactory {
     public static ILoadStrategy getLoadStrategy(@LoaderConst.LoaderType int type) {
         switch (type) {
             default:
