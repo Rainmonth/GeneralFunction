@@ -36,7 +36,7 @@ dependencies {
 
     api rootProject.ext.json.gson
     // 这个可以不用，作用Android KTX 是包含在 Android Jetpack 及其他 Android 库中的一组 Kotlin 扩展程序。KTX 扩展程序可以为 Jetpack、Android 平台及其他 API 提供简洁的惯用 Kotlin 代码。
-    implementation "androidx.core:core-ktx:1.6.0"
+    implementation "androidx.core:core-ktx:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 repositories {
