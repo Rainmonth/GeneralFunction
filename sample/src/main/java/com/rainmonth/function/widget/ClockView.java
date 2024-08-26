@@ -164,7 +164,6 @@ public class ClockView extends View {
             mTime = Calendar.getInstance();
         }
         mTime.setTimeInMillis(time.getTimeInMillis());
-        invalidate(); // 触发视图重绘
         setAutoUpdate(mAutoUpdate);
     }
 
@@ -183,6 +182,7 @@ public class ClockView extends View {
             updateTime();
         } else {
             mHandler.removeCallbacks(mUpdateRunnable);
+            invalidate();
         }
     }
 
