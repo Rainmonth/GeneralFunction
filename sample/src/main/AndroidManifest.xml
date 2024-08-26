@@ -25,6 +25,9 @@
         <activity
             android:name=".camera.VideoCamera2DemoActivity"
             android:exported="false" />
+        <activity
+            android:name=".ClockTestActivity"
+            android:exported="false" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
