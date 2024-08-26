@@ -2,6 +2,7 @@ package com.rainmonth.function;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
@@ -27,7 +28,17 @@ public class MainActivity extends AppCompatActivity {
         view2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                VideoCamera2DemoActivity.start(view.getContext());
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    VideoCamera2DemoActivity.start(view.getContext());
+                }
+            }
+        });
+
+        View view3 = findViewById(R.id.fl_3);
+        view3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ClockTestActivity.start(v.getContext());
             }
         });
     }

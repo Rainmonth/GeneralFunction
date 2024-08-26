@@ -14,10 +14,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.rainmonth.function.R;
-import com.rainmonth.utils.FileUtils;
 import com.rainmonth.utils.PermissionUtils;
 import com.rainmonth.utils.ToastUtils;
 import com.rainmonth.utils.log.LogUtils;
@@ -45,7 +43,7 @@ public class VideoCameraDemoActivity extends AppCompatActivity implements Surfac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_camera_demo);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            Insets systemBars = insets.getStableInsets();
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });

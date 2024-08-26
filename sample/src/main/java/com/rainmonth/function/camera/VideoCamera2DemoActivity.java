@@ -114,24 +114,24 @@ public class VideoCamera2DemoActivity extends AppCompatActivity implements View.
             = new TextureView.SurfaceTextureListener() {
 
         @Override
-        public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture,
+        public void onSurfaceTextureAvailable(@NonNull SurfaceTexture surfaceTexture,
                                               int width, int height) {
             openCamera(width, height);
         }
 
         @Override
-        public void onSurfaceTextureSizeChanged(SurfaceTexture surfaceTexture,
+        public void onSurfaceTextureSizeChanged(@NonNull SurfaceTexture surfaceTexture,
                                                 int width, int height) {
             configureTransform(width, height);
         }
 
         @Override
-        public boolean onSurfaceTextureDestroyed(SurfaceTexture surfaceTexture) {
+        public boolean onSurfaceTextureDestroyed(@NonNull SurfaceTexture surfaceTexture) {
             return true;
         }
 
         @Override
-        public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {
+        public void onSurfaceTextureUpdated(@NonNull SurfaceTexture surfaceTexture) {
         }
 
     };
@@ -426,7 +426,7 @@ public class VideoCamera2DemoActivity extends AppCompatActivity implements View.
         }
     }
 
-    private boolean hasPermissionsGranted(String[] permissions) {
+    private boolean hasPermissionsGranted(@NonNull String[] permissions) {
         for (String permission : permissions) {
             if (ActivityCompat.checkSelfPermission(getActivity(), permission)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -636,7 +636,7 @@ public class VideoCamera2DemoActivity extends AppCompatActivity implements View.
         mMediaRecorder.prepare();
     }
 
-    private String getVideoFilePath(Context context) {
+    private String  getVideoFilePath(Context context) {
         final File dir = context.getExternalFilesDir(null);
         return (dir == null ? "" : (dir.getAbsolutePath() + "/"))
                 + System.currentTimeMillis() + ".mp4";
